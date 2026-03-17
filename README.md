@@ -33,10 +33,11 @@ Server runs at `http://localhost:3000` (configurable via `PORT` in `.env`).
 ```bash
 cd forestince-client
 npm install
+cp .env.example .env
 npm run dev
 ```
 
-Client runs at `http://localhost:5173`. The API base URL defaults to `http://localhost:3000/api` and can be overridden via `VITE_API_URL`.
+Client runs at `http://localhost:5173`. The API base URL defaults to `http://localhost:3000/api` and can be overridden via `VITE_API_URL` in .env.
 
 ---
 
