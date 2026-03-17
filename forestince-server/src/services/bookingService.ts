@@ -57,7 +57,7 @@ export async function getBookings(filters: BookingFilters): Promise<BookingsResp
   ])
 
   return {
-    data: bookings as unknown as BookingWithRelations[],
+    data: bookings as BookingWithRelations[],
     meta: {
       total,
       page,
@@ -73,5 +73,5 @@ export async function getBookingById(id: string): Promise<BookingWithRelations |
     include: bookingInclude,
   })
 
-  return booking as unknown as BookingWithRelations | null
+  return booking as BookingWithRelations | null
 }
