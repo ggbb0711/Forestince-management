@@ -23,7 +23,7 @@ app.get('/health', (_req, res) => {
 
 app.use(errorHandler)
 
-const port = process.env.PORT ?? 3001
+const port = process.env.PORT ?? 3000
 app.listen(port, () => {
   console.log(`Forestince server running on http://localhost:${port}`)
 })
