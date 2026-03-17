@@ -1,68 +1,33 @@
 import { Router, Request, Response } from 'express'
+import { query, validationResult } from 'express-validator'
 import { getBookings, getBookingById } from '../services/bookingService'
-import { BookingFilters, BookingStatus, BOOKING_STATUSES } from '../types/booking'
+import { BookingFilters } from '../types/booking'
 
 const router = Router()
 
-router.get('/', async (req: Request, res: Response) => {
+const validateBookingQuery = [
+  query('status')
+    .optional()
+    .toUpperCase()
+    .isIn(['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'])
+    .withMessage('Must be one of: PENDING, CONFIRMED, CANCELLED, COMPLETED'),
+  query('facilityId').optional().isString(),
+  query('userId').optional().isString(),
+  query('dateFrom').optional().isISO8601().withMessage('Must be a valid ISO date').toDate(),
+  query('dateTo').optional().isISO8601().withMessage('Must be a valid ISO date').toDate(),
+  query('search').optional().isString(),
+  query('page').optional().isInt({ min: 1 }).withMessage('Must be a positive integer').toInt(),
+  query('pageSize').optional().isInt({ min: 1, max: 100 }).withMessage('Must be between 1 and 100').toInt(),
+]
+
+router.get('/', validateBookingQuery, async (req: Request, res: Response) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array().map((e) => e.msg).join('; ') })
+  }
+
   try {
-    const filters: BookingFilters = {}
-
-    if (req.query.status) {
-      const status = (req.query.status as string).toUpperCase()
-      if (!BOOKING_STATUSES.includes(status as BookingStatus)) {
-        return res.status(400).json({
-          error: `Invalid status "${req.query.status}". Must be one of: ${BOOKING_STATUSES.join(', ')}`,
-        })
-      }
-      filters.status = status as BookingStatus
-    }
-
-    if (req.query.facilityId) {
-      filters.facilityId = req.query.facilityId as string
-    }
-
-    if (req.query.userId) {
-      filters.userId = req.query.userId as string
-    }
-
-    if (req.query.dateFrom) {
-      const date = new Date(req.query.dateFrom as string)
-      if (isNaN(date.getTime())) {
-        return res.status(400).json({ error: `Invalid dateFrom: "${req.query.dateFrom}"` })
-      }
-      filters.dateFrom = date
-    }
-
-    if (req.query.dateTo) {
-      const date = new Date(req.query.dateTo as string)
-      if (isNaN(date.getTime())) {
-        return res.status(400).json({ error: `Invalid dateTo: "${req.query.dateTo}"` })
-      }
-      filters.dateTo = date
-    }
-
-    if (req.query.search) {
-      filters.search = req.query.search as string
-    }
-
-    if (req.query.page) {
-      const page = parseInt(req.query.page as string, 10)
-      if (isNaN(page) || page < 1) {
-        return res.status(400).json({ error: 'Invalid page number' })
-      }
-      filters.page = page
-    }
-
-    if (req.query.pageSize) {
-      const pageSize = parseInt(req.query.pageSize as string, 10)
-      if (isNaN(pageSize) || pageSize < 1 || pageSize > 100) {
-        return res.status(400).json({ error: 'pageSize must be between 1 and 100' })
-      }
-      filters.pageSize = pageSize
-    }
-
-    const result = await getBookings(filters)
+    const result = await getBookings(req.query as unknown as BookingFilters)
     return res.json(result)
   } catch (err) {
     console.error('GET /api/bookings error:', err)

@@ -1,9 +1,6 @@
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
 export type FacilityType = 'MEDITATION' | 'SPRING' | 'TRAIL' | 'GARDEN' | 'POD'
 
-export const BOOKING_STATUSES: BookingStatus[] = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED']
-export const FACILITY_TYPES: FacilityType[] = ['MEDITATION', 'SPRING', 'TRAIL', 'GARDEN', 'POD']
-
 export interface BookingFilters {
   status?: BookingStatus
   facilityId?: string
