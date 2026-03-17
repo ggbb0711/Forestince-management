@@ -2,7 +2,7 @@
 
 A facility booking management system — view facilities, track bookings, and analyse usage trends across a campus.
 
----
+---t
 
 ## Setup Instructions
 
@@ -17,6 +17,7 @@ A facility booking management system — view facilities, track bookings, and an
 cd forestince-server
 npm install
 cp .env.example .env
+npx prisma migrate deploy 
 npx prisma db seed
 npm run dev
 ```
