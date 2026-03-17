@@ -2,7 +2,9 @@
 
 A facility booking management system — view facilities, track bookings, and analyse usage trends across a campus.
 
-<video src="Screen-Demo.mp4" controls width="500"></video>
+
+https://github.com/user-attachments/assets/21fe7f70-a246-4bd6-a165-a0922239bb20
+
 
 ---
 
