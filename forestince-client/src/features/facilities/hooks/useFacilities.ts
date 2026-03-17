@@ -1,5 +1,4 @@
-import { useState, useEffect, useTransition } from 'react'
-import { toast } from 'sonner'
+import { useQuery } from '../../../hooks/useQuery'
 import type { Facility } from '../types/facility'
 import { getFacilities } from '../api/getFacilities'
 
@@ -10,22 +9,10 @@ interface UseFacilitiesResult {
 }
 
 export function useFacilities(): UseFacilitiesResult {
-  const [facilities, setFacilities] = useState<Facility[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    startTransition(async () => {
-      try {
-        const data = await getFacilities()
-        setFacilities(data)
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : 'Unknown error'
-        setError(msg)
-        toast.error('Failed to load facilities', { description: msg })
-      }
-    })
-  }, [])
-
-  return { facilities, loading: isPending, error }
+  const { data, loading, error } = useQuery<Facility[]>(
+    () => getFacilities(),
+    [],
+    { errorTitle: 'Failed to load facilities' }
+  )
+  return { facilities: data ?? [], loading, error }
 }

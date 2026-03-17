@@ -1,17 +1,8 @@
+import type { ReactNode } from 'react'
 import { cn } from '../../../lib/utils'
 import type { StatItem } from '../types/dashboard'
-import { CalendarIcon } from '../../../assets/icons/CalendarIcon'
-import { PeopleTreeIcon } from '../../../assets/icons/PeopleTreeIcon'
-import { RegisteredUsersIcon } from '../../../assets/icons/RegisteredUsersIcon'
-import { PendingRequestIcon } from '../../../assets/icons/PendingRequestIcon'
-import type { JSX } from 'react'
 
-const ICON_MAP: Record<string, () => JSX.Element> = {
-  'Total Bookings': () => <CalendarIcon width={22} height={22} />,
-  'Active Facilities': () => <PeopleTreeIcon width={22} height={22} />,
-  'Registered Users': () => <RegisteredUsersIcon width={22} height={22} />,
-  'Pending Requests': () => <PendingRequestIcon width={22} height={22} />,
-}
+export type StatCardProps = StatItem & { icon: ReactNode }
 
 function changeBadgeClass(change: string, highlight: boolean): string {
   if (change.startsWith('+')) return highlight ? 'text-cancelled bg-cancelled-bg' : 'text-good bg-good-bg'
@@ -19,8 +10,7 @@ function changeBadgeClass(change: string, highlight: boolean): string {
   return 'text-pending bg-pending-bg'
 }
 
-export function StatCard({ label, value, change, highlight }: StatItem) {
-  const IconComp = ICON_MAP[label]
+export function StatCard({ label, value, change, highlight, icon }: StatCardProps) {
   return (
     <div className="bg-white rounded-2xl px-4 py-4 relative overflow-hidden shadow-sm">
       {change && (
@@ -31,16 +21,9 @@ export function StatCard({ label, value, change, highlight }: StatItem) {
           {change}
         </span>
       )}
-      <div className="mb-1.5">
-        {IconComp ? <IconComp /> : null}
-      </div>
+      <div className="mb-1.5">{icon}</div>
       <div className="text-[11px] text-fg-muted mb-0.5 font-medium">{label}</div>
-      <div className={cn(
-        'text-2xl font-extrabold font-mono tracking-tight',
-        highlight ? 'text-pending' : 'text-color-fg'
-      )}>
-        {value}
-      </div>
+      <div className="text-2xl font-extrabold font-mono tracking-tight">{value}</div>
     </div>
   )
 }

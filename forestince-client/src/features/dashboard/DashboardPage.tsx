@@ -2,11 +2,16 @@ import { useState } from 'react'
 import { cn } from '../../lib/utils'
 import { useDashboard } from './hooks/useDashboard'
 import { StatCard } from './components/StatCard'
+import type { StatCardProps } from './components/StatCard'
 import { BookingsPanel } from './components/BookingsPanel'
 import { FacilityUsagePanel } from './components/FacilityUsagePanel'
 import { CampusMapView } from './components/CampusMapView'
 import { Skeleton } from '../../components/ui/skeleton'
-import type { StatItem, DashboardWindow } from './types/dashboard'
+import type { DashboardWindow } from './types/dashboard'
+import { CalendarIcon } from '../../assets/icons/CalendarIcon'
+import { PeopleTreeIcon } from '../../assets/icons/PeopleTreeIcon'
+import { RegisteredUsersIcon } from '../../assets/icons/RegisteredUsersIcon'
+import { PendingRequestIcon } from '../../assets/icons/PendingRequestIcon'
 
 const WINDOWS: { value: DashboardWindow; label: string }[] = [
   { value: '24h', label: 'Last 24h' },
@@ -18,18 +23,18 @@ export function DashboardPage() {
   const [window, setWindow] = useState<DashboardWindow>('28d')
   const { summary, loading, error } = useDashboard(window)
 
-  const stats: StatItem[] = summary
+  const stats: StatCardProps[] = summary
     ? [
-        { label: 'Total Bookings',    value: String(summary.stats.totalBookings), change: summary.stats.totalBookingsChange, highlight: false },
-        { label: 'Active Facilities', value: String(summary.stats.totalFacilities), change: null, highlight: false },
-        { label: 'Registered Users',  value: String(summary.stats.registeredUsers), change: null, highlight: false },
-        { label: 'Pending Requests',  value: String(summary.stats.pendingRequests), change: summary.stats.pendingRequestsChange, highlight: true  },
+        { label: 'Total Bookings',    icon: <CalendarIcon width={22} height={22} />,        value: String(summary.stats.totalBookings),   change: summary.stats.totalBookingsChange,   highlight: false },
+        { label: 'Active Facilities', icon: <PeopleTreeIcon width={22} height={22} />,      value: String(summary.stats.totalFacilities), change: null,                                highlight: false },
+        { label: 'Registered Users',  icon: <RegisteredUsersIcon width={22} height={22} />, value: String(summary.stats.registeredUsers), change: null,                                highlight: false },
+        { label: 'Pending Requests',  icon: <PendingRequestIcon width={22} height={22} />,  value: String(summary.stats.pendingRequests), change: summary.stats.pendingRequestsChange, highlight: true  },
       ]
     : [
-        { label: 'Total Bookings',    value: '—', change: null, highlight: false },
-        { label: 'Active Facilities', value: '—', change: null, highlight: false },
-        { label: 'Registered Users',  value: '—', change: null, highlight: false },
-        { label: 'Pending Requests',  value: '—', change: null, highlight: true  },
+        { label: 'Total Bookings',    icon: <CalendarIcon width={22} height={22} />,        value: '—', change: null, highlight: false },
+        { label: 'Active Facilities', icon: <PeopleTreeIcon width={22} height={22} />,      value: '—', change: null, highlight: false },
+        { label: 'Registered Users',  icon: <RegisteredUsersIcon width={22} height={22} />, value: '—', change: null, highlight: false },
+        { label: 'Pending Requests',  icon: <PendingRequestIcon width={22} height={22} />,  value: '—', change: null, highlight: true  },
       ]
 
   return (

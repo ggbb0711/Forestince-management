@@ -6,7 +6,7 @@ import type { ListProps } from './types'
 
 export function DesktopBookingsList({ bookings, loading, error, onRowClick }: ListProps) {
   return (
-    <div className="hidden lg:block bg-white rounded-xl shadow-sm overflow-hidden">
+    <div className="hidden lg:block bg-white rounded-xl shadow-sm overflow-hidden max-h-75 overflow-y-auto">
       <div className="grid grid-cols-[2fr_1.5fr_1.5fr_1fr] gap-2 px-5 py-3 border-b border-surface">
         {['EMPLOYEE', 'START TIME', 'END TIME', 'STATUS'].map(h => (
           <span key={h} className="text-[10px] font-bold text-fg-muted tracking-[0.6px]">{h}</span>

@@ -124,6 +124,7 @@ Stats are computed in a single `Promise.all` inside `reportService.getFacilitySt
 | Data fetching | Plain `fetch` wrapped in feature-level hooks | No external library dependency; straightforward for a read-heavy dashboard |
 | Pagination | Server-side | Keeps payload small; the bookings endpoint accepts `page` + `pageSize` |
 | Shared types | `src/lib/` (`bookingStatus.ts`, `paginationMeta.ts`) | Prevents duplication across features without creating barrel files |
+| Shared hooks | `src/hooks/` (`useQuery.ts`) | Generic async fetch hook with loading state, error handling, and cancellation — feature hooks delegate to it, keeping each to ~5 lines |
 
 ---
 
