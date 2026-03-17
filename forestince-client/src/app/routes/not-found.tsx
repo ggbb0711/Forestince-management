@@ -4,7 +4,7 @@ export function NotFoundPage() {
   const location = useLocation()
   return (
     <div className="flex-1 overflow-auto flex items-center justify-center p-10 font-sans">
-      <div className="text-center max-w-[400px]">
+      <div className="text-center max-w-100">
         <div className="text-[64px] font-extrabold text-btn leading-none mb-2">404</div>
         <h1 className="text-[22px] font-extrabold text-color-fg mb-3">Page Not Found</h1>
         <p className="text-[13px] text-fg-muted mb-1.5">

@@ -3,6 +3,7 @@ import { Breadcrumbs } from '../../components/Breadcrumbs'
 import { Skeleton } from '../../components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs'
 import { FacilityBookingsTab } from './components/FacilityBookingsTab/index'
+import { FacilityUsageTab } from './components/FacilityUsageTab/index'
 import { useFacility } from './hooks/useFacility'
 
 function FacilityDetailSkeleton() {
@@ -45,9 +46,13 @@ export function FacilityDetailPage() {
             <Tabs defaultValue="bookings">
               <TabsList>
                 <TabsTrigger value="bookings">Bookings</TabsTrigger>
+                <TabsTrigger value="usage">Usage</TabsTrigger>
               </TabsList>
               <TabsContent value="bookings">
                 <FacilityBookingsTab facilityId={facilityId!} facilityName={facility.name} />
+              </TabsContent>
+              <TabsContent value="usage">
+                <FacilityUsageTab facilityId={facilityId!} />
               </TabsContent>
             </Tabs>
           </>

@@ -1,11 +1,19 @@
 import { Router } from 'express'
 import type { Request, Response, NextFunction } from 'express'
+import { param, matchedData } from 'express-validator'
 import { getFacilities, getFacilityById } from '../services/facilityService'
 import { API_MESSAGES } from '../constants/messages'
-import type { ApiResponse } from '../types/response'
-import type { FacilityWithCount } from '../types/facility'
+import { validateRequest } from '../middleware/validateRequest'
 
 const router = Router()
+
+const validateFacilityId = [
+  param('id')
+    .isInt({ min: 1 })
+    .withMessage(API_MESSAGES.FACILITIES.INVALID_ID.message)
+    .toInt(),
+  validateRequest,
+]
 
 router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,13 +25,9 @@ router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   }
 })
 
-router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
-  const id = parseInt(req.params.id, 10)
-  if (isNaN(id)) {
-    const { message, status, isOk } = API_MESSAGES.FACILITIES.INVALID_ID
-    return res.status(status).json({ payload: null, message, isOk })
-  }
+router.get('/:id', validateFacilityId, async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { id } = matchedData<{ id: number }>(req)
     const facility = await getFacilityById(id)
     if (!facility) {
       const { message, status, isOk } = API_MESSAGES.FACILITIES.NOT_FOUND

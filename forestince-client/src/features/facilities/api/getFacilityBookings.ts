@@ -1,6 +1,7 @@
 import { API_URL } from '../../../config/env'
 import type { ApiResponse } from '../../../lib/apiResponse'
-import type { FacilityBooking, BookingFilters, PaginationMeta } from '../types/facility'
+import type { FacilityBooking, BookingFilters } from '../types/facility'
+import type { PaginationMeta } from '../../../lib/paginationMeta'
 
 export async function getFacilityBookings(
   facilityId: string,

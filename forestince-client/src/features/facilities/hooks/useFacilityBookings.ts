@@ -1,6 +1,7 @@
 import { useState, useEffect, useTransition } from 'react'
 import { toast } from 'sonner'
-import type { FacilityBooking, BookingFilters, PaginationMeta } from '../types/facility'
+import type { FacilityBooking, BookingFilters } from '../types/facility'
+import type { PaginationMeta } from '../../../lib/paginationMeta'
 import { getFacilityBookings } from '../api/getFacilityBookings'
 
 interface UseFacilityBookingsResult {

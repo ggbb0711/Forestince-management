@@ -13,6 +13,12 @@ const ICON_MAP: Record<string, () => JSX.Element> = {
   'Pending Requests': () => <PendingRequestIcon width={22} height={22} />,
 }
 
+function changeBadgeClass(change: string, highlight: boolean): string {
+  if (change.startsWith('+')) return highlight ? 'text-cancelled bg-cancelled-bg' : 'text-good bg-good-bg'
+  if (change.startsWith('-')) return highlight ? 'text-good bg-good-bg' : 'text-cancelled bg-cancelled-bg'
+  return 'text-pending bg-pending-bg'
+}
+
 export function StatCard({ label, value, change, highlight }: StatItem) {
   const IconComp = ICON_MAP[label]
   return (
@@ -20,9 +26,7 @@ export function StatCard({ label, value, change, highlight }: StatItem) {
       {change && (
         <span className={cn(
           'absolute top-3 right-3 text-[10px] font-bold px-1.75 py-0.5 rounded-full font-mono',
-          highlight
-            ? 'text-pending bg-pending-bg'
-            : 'text-brand bg-good-bg'
+          changeBadgeClass(change, highlight)
         )}>
           {change}
         </span>

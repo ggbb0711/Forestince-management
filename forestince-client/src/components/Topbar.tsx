@@ -31,7 +31,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
       <button className="relative flex items-center justify-center w-9 h-9 cursor-pointer text-fg-muted border-0 bg-transparent shrink-0">
         <IconBell />
-        <span className="absolute top-1.5 right-1.5 w-[7px] h-[7px] rounded-full bg-orange-600 border-2 border-white" />
+        <span className="absolute top-1.5 right-1.5 w-1.75 h-1.75 rounded-full bg-orange-600 border-2 border-white" />
       </button>
 
       <div className="flex items-center gap-2 shrink-0">
@@ -39,7 +39,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           <div className="font-bold text-xs text-color-fg">Elena Wood</div>
           <div className="text-[10px] text-fg-muted">Super Admin</div>
         </div>
-        <div className="w-[34px] h-[34px] rounded-full bg-gradient-to-br from-green-200 to-btn flex items-center justify-center text-white font-extrabold text-sm">
+        <div className="w-8.5 h-8.5 rounded-full bg-linear-to-br from-green-200 to-btn flex items-center justify-center text-white font-extrabold text-sm">
           E
         </div>
       </div>

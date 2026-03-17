@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useFacilityBookings } from '../../hooks/useFacilityBookings'
-import { FilterBar } from './FilterBar'
+import { FilterBar } from '../../../../components/FilterBar'
+import { Pagination } from '../../../../components/Pagination'
 import { DesktopBookingsList } from './DesktopBookingsList'
 import { MobileBookingsList } from './MobileBookingsList'
-import { Pagination } from './Pagination'
 import type { BookingFilters } from '../../types/facility'
 
 interface FacilityBookingsTabProps {
@@ -31,9 +31,25 @@ export function FacilityBookingsTab({ facilityId, facilityName }: FacilityBookin
     })
   }
 
+  const filterValues = {
+    status: filters.status,
+    dateFrom: filters.dateFrom,
+    dateTo: filters.dateTo,
+    search: filters.search,
+  }
+  const hasActiveFilters = !!(filters.status ?? filters.dateFrom ?? filters.dateTo ?? filters.search)
+
   return (
     <div className="flex flex-col gap-4">
-      <FilterBar filters={filters} onFilterChange={handleFilterChange} onClear={clearFilters} />
+      <FilterBar
+        showSearch
+        showStatus
+        showDateRange
+        values={filterValues}
+        onChange={patch => handleFilterChange(patch as Partial<BookingFilters>)}
+        onClear={clearFilters}
+        hasActiveFilters={hasActiveFilters}
+      />
       <MobileBookingsList bookings={bookings} loading={loading} error={error} onRowClick={handleRowClick} />
       <DesktopBookingsList bookings={bookings} loading={loading} error={error} onRowClick={handleRowClick} />
       {meta && meta.totalPages > 1 && (

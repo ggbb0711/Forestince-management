@@ -5,11 +5,3 @@ export interface FacilityWithCount {
   updatedAt: Date
   _count: { bookings: number }
 }
-
-export interface FacilitiesResponse {
-  data: FacilityWithCount[]
-}
-
-export interface FacilityResponse {
-  data: FacilityWithCount
-}

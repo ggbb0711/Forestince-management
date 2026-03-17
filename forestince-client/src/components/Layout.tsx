@@ -3,10 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { cn } from '../lib/utils'
 import { Sidebar } from './Sidebar'
-
-export type LayoutOutletContext = {
-  onMenuClick: () => void
-}
+import { Topbar } from './Topbar'
 
 export function Layout() {
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -34,7 +31,8 @@ export function Layout() {
       </aside>
 
       <main className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <Outlet context={{ onMenuClick: () => setDrawerOpen(true) } satisfies LayoutOutletContext} />
+        <Topbar onMenuClick={() => setDrawerOpen(true)} />
+        <Outlet />
       </main>
 
       <Toaster position="bottom-right" richColors closeButton />

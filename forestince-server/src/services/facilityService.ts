@@ -11,7 +11,6 @@ const facilityInclude = {
 export async function getFacilities(): Promise<FacilityWithCount[]> {
   const facilities = await prisma.facility.findMany({
     include: facilityInclude,
-    orderBy: { name: 'asc' },
   })
   return facilities as unknown as FacilityWithCount[]
 }

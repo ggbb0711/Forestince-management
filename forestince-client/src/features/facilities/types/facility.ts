@@ -1,3 +1,33 @@
+import type { BookingStatus } from '../../../lib/bookingStatus'
+
+export interface TopBooker {
+  rank: number
+  userId: string
+  userName: string
+  companyName: string
+  bookingCount: number
+}
+
+export interface DailyUsage {
+  date: string
+  count: number
+}
+
+export interface FacilityStatBreakdown {
+  facilityId: number
+  facilityName: string
+  totalBookings: number
+  confirmed: number
+  pending: number
+  cancelled: number
+  completed: number
+  utilizationRate: number
+  dateFrom: string
+  dateTo: string
+  topBookers: TopBooker[]
+  dailyUsage: DailyUsage[]
+}
+
 export interface Facility {
   id: number
   name: string
@@ -10,7 +40,7 @@ export interface FacilityBooking {
   id: string
   startTime: string
   endTime: string
-  status: string
+  status: BookingStatus
   notes: string | null
   facilityId: number
   userId: string
@@ -21,7 +51,7 @@ export interface FacilityBooking {
 }
 
 export interface BookingFilters {
-  status?: string
+  status?: BookingStatus
   dateFrom?: string
   dateTo?: string
   search?: string
@@ -29,9 +59,3 @@ export interface BookingFilters {
   pageSize?: number
 }
 
-export interface PaginationMeta {
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
-}

@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import type { Request, Response, NextFunction } from 'express'
-import { query, validationResult } from 'express-validator'
+import { query } from 'express-validator'
 import { getBookings, getBookingById } from '../services/bookingService'
 import { API_MESSAGES } from '../constants/messages'
-import type { ApiResponse } from '../types/response'
+import { validateRequest } from '../middleware/validateRequest'
 import type { BookingFilters, BookingsResponse, BookingWithRelations } from '../types/booking'
 
 const router = Router()
@@ -21,16 +21,10 @@ const validateBookingQuery = [
   query('search').optional().isString(),
   query('page').optional().isInt({ min: 1 }).withMessage('Must be a positive integer').toInt(),
   query('pageSize').optional().isInt({ min: 1, max: 100 }).withMessage('Must be between 1 and 100').toInt(),
+  validateRequest,
 ]
 
 router.get('/', validateBookingQuery, async (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    const message = errors.array().map(e => e.msg).join('; ')
-    const { status } = API_MESSAGES.BOOKINGS.INVALID_QUERY
-    return res.status(status).json({ payload: null, message, isOk: false })
-  }
-
   try {
     const result = await getBookings(req.query as unknown as BookingFilters)
     const { message, isOk } = API_MESSAGES.BOOKINGS.LIST_OK

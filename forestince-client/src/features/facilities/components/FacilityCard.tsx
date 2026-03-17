@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FacilityNavIcon } from '../../../assets/icons/FacilityNavIcon'
+import { FacilityTypeIcon } from '../../../components/FacilityTypeIcon'
 import type { Facility } from '../types/facility'
 
 interface FacilityCardProps {
@@ -16,7 +16,7 @@ export function FacilityCard({ facility, index }: FacilityCardProps) {
     >
       <div className="flex items-start justify-between">
         <div className="w-10 h-10 rounded-xl bg-good-icon-bg flex items-center justify-center">
-          <FacilityNavIcon width={20} height={20} color="#2e7d32" />
+          <FacilityTypeIcon id={facility.id} size={20} color="#2e7d32" />
         </div>
         <span className="text-[11px] font-bold text-fg-muted font-mono">#{index}</span>
       </div>

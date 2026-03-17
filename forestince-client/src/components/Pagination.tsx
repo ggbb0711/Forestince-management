@@ -1,4 +1,4 @@
-import type { PaginationMeta } from '../../types/facility'
+import type { PaginationMeta } from '../lib/paginationMeta'
 
 interface PaginationProps {
   meta: PaginationMeta
