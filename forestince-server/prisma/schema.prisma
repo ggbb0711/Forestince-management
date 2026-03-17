@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+
+  @@map("companies")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company  Company   @relation(fields: [companyId], references: [id])
+  bookings Booking[]
+
+  @@map("users")
+}
+
+model Facility {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  /// MEDITATION | SPRING | TRAIL | GARDEN | POD
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@map("facilities")
+}
+
+model Booking {
+  id         String   @id @default(cuid())
+  startTime  DateTime
+  endTime    DateTime
+  /// PENDING | CONFIRMED | CANCELLED | COMPLETED
+  status     String   @default("PENDING")
+  notes      String?
+  facilityId String
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  facility Facility @relation(fields: [facilityId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@map("bookings")
+}
