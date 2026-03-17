@@ -117,7 +117,6 @@ Stats are computed in a single `Promise.all` inside `reportService.getFacilitySt
 | Routing | React Router v7 (config in `router.tsx`) | Simple SPA with a shared layout wrapping all routes |
 | Data fetching | Plain `fetch` wrapped in feature-level hooks | No external library dependency; straightforward for a read-heavy dashboard |
 | Pagination | Server-side | Keeps payload small; the bookings endpoint accepts `page` + `pageSize` |
-| Icons | Custom SVG components via `FacilityTypeIcon` (name-based) | Avoids a heavy icon library for a small, known set of facility types |
 | Shared types | `src/lib/` (`bookingStatus.ts`, `paginationMeta.ts`) | Prevents duplication across features without creating barrel files |
 
 ---
@@ -158,3 +157,4 @@ Outside the speckit workflow, I also used Claude for general boilerplate (seeder
 - Image-to-code translation, it still misses a lot of the design details and colours from the original mockup. I had to find most of the colour values and spacing manually by inspecting the reference image closely.
 - Knowing when to stop, AI tends to over-engineer and add things that weren't asked for. I had to stay deliberate about the scope of each prompt and review output critically rather than accepting it wholesale.
 - Project-specific context, the AI has no memory of earlier decisions unless I explicitly provide it. Maintaining consistent patterns across a multi-session project required keeping track of decisions myself and re-grounding it at the start of each session.
+
