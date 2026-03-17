@@ -1,14 +1,14 @@
 import { cn } from '../../../lib/utils'
 import type { StatItem } from '../types/dashboard'
 import { CalendarIcon } from '../../../assets/icons/CalendarIcon'
-import { MindGearIcon } from '../../../assets/icons/MindGearIcon'
+import { PeopleTreeIcon } from '../../../assets/icons/PeopleTreeIcon'
 import { RegisteredUsersIcon } from '../../../assets/icons/RegisteredUsersIcon'
 import { PendingRequestIcon } from '../../../assets/icons/PendingRequestIcon'
 import type { JSX } from 'react'
 
 const ICON_MAP: Record<string, () => JSX.Element> = {
   'Total Bookings': () => <CalendarIcon width={22} height={22} />,
-  'Active Facilities': () => <MindGearIcon width={22} height={22} />,
+  'Active Facilities': () => <PeopleTreeIcon width={22} height={22} />,
   'Registered Users': () => <RegisteredUsersIcon width={22} height={22} />,
   'Pending Requests': () => <PendingRequestIcon width={22} height={22} />,
 }

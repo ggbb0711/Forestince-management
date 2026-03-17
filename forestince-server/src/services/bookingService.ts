@@ -26,7 +26,7 @@ export async function getBookings(filters: BookingFilters): Promise<BookingsResp
   const where: Prisma.BookingWhereInput = {}
 
   if (status) where.status = status
-  if (facilityId) where.facilityId = facilityId
+  if (facilityId) (where as Record<string, unknown>).facilityId = parseInt(facilityId, 10)
   if (userId) where.userId = userId
 
   if (dateFrom || dateTo) {
@@ -57,7 +57,7 @@ export async function getBookings(filters: BookingFilters): Promise<BookingsResp
   ])
 
   return {
-    data: bookings as BookingWithRelations[],
+    data: bookings as unknown as BookingWithRelations[],
     meta: {
       total,
       page,
@@ -73,5 +73,5 @@ export async function getBookingById(id: string): Promise<BookingWithRelations |
     include: bookingInclude,
   })
 
-  return booking as BookingWithRelations | null
+  return booking as unknown as BookingWithRelations | null
 }

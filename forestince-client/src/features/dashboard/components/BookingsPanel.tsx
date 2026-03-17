@@ -1,34 +1,11 @@
 import { cn } from '../../../lib/utils'
 import { StatusBadge } from '../../../components/StatusBadge'
+import { FacilityNavIcon } from '../../../assets/icons/FacilityNavIcon'
 import { Button } from '../../../components/ui/button'
 import { IconPlus } from '../../../assets/icons/IconPlus'
 import { IconChevronRight } from '../../../assets/icons/IconChevronRight'
-import { HutIcon } from '../../../assets/icons/HutIcon'
-import { SwimmingIcon } from '../../../assets/icons/SwimmingIcon'
-import { HikingIcon } from '../../../assets/icons/HikingIcon'
-import { ZenIcon } from '../../../assets/icons/ZenIcon'
+import { formatDateTime } from '../../../lib/formatDateTime'
 import type { Booking } from '../types/dashboard'
-import type { JSX, SVGProps } from 'react'
-
-const FACILITY_ICONS: Record<string, (props: SVGProps<SVGSVGElement>) => JSX.Element> = {
-  MEDITATION: (props) => <HutIcon {...props} />,
-  SPRING:     (props) => <SwimmingIcon {...props} />,
-  TRAIL:      (props) => <HikingIcon {...props} />,
-  GARDEN:     (props) => <ZenIcon {...props} />,
-  POD:        (props) => <ZenIcon {...props} />,
-}
-
-function FacilityTypeIcon({ type }: { type: string }) {
-  const Icon = FACILITY_ICONS[type.toUpperCase()] ?? FACILITY_ICONS['POD']
-  return <Icon width={14} height={14} color="#2e7d32" />
-}
-
-function formatDateTime(iso: string): string {
-  return new Date(iso).toLocaleString('en-US', {
-    month: 'short', day: 'numeric',
-    hour: 'numeric', minute: '2-digit', hour12: true,
-  })
-}
 
 function PanelHeader() {
   return (
@@ -61,7 +38,7 @@ function MobileBookingsPanel({ bookings, loading, error }: ListProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2 mb-0.5">
               <div className="flex items-center gap-2 min-w-0">
-                <FacilityTypeIcon type={b.facility.type} />
+                <FacilityNavIcon width={14} height={14} color="#2e7d32" />
                 <span className="font-bold text-[13px] text-color-fg truncate">{b.facility.name}</span>
               </div>
               <StatusBadge status={b.status} />
@@ -99,7 +76,7 @@ function DesktopBookingsPanel({ bookings, loading, error }: ListProps) {
               )}>
                 <div className="flex items-center gap-2 min-w-0">
                   <div className="w-7 h-7 rounded-[7px] bg-good-icon-bg flex items-center justify-center shrink-0">
-                    <FacilityTypeIcon type={b.facility.type} />
+                    <FacilityNavIcon width={14} height={14} color="#2e7d32" />
                   </div>
                   <span className="font-semibold text-xs text-color-fg truncate">{b.facility.name}</span>
                 </div>

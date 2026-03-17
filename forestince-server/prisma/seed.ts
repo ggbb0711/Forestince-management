@@ -28,11 +28,11 @@ async function main() {
   ])
 
   const [meditationHut, crystalSpring, oakTrail, zenGarden, silentPod] = await Promise.all([
-    prisma.facility.create({ data: { name: 'Birch Meditation Hut', type: 'MEDITATION' } }),
-    prisma.facility.create({ data: { name: 'Crystal Spring Bath', type: 'SPRING' } }),
-    prisma.facility.create({ data: { name: 'Old Oak Forest Trail', type: 'TRAIL' } }),
-    prisma.facility.create({ data: { name: 'Zen Garden Deck', type: 'GARDEN' } }),
-    prisma.facility.create({ data: { name: 'Silent Retreat Pod', type: 'POD' } }),
+    prisma.facility.create({ data: { name: 'Birch Meditation Hut' } }),
+    prisma.facility.create({ data: { name: 'Crystal Spring Bath' } }),
+    prisma.facility.create({ data: { name: 'Old Oak Forest Trail' } }),
+    prisma.facility.create({ data: { name: 'Zen Garden Deck' } }),
+    prisma.facility.create({ data: { name: 'Silent Retreat Pod' } }),
   ])
 
   const users = await Promise.all([

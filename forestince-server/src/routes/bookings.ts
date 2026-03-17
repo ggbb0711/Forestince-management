@@ -1,7 +1,10 @@
-import { Router, Request, Response } from 'express'
+import { Router } from 'express'
+import type { Request, Response, NextFunction } from 'express'
 import { query, validationResult } from 'express-validator'
 import { getBookings, getBookingById } from '../services/bookingService'
-import { BookingFilters } from '../types/booking'
+import { API_MESSAGES } from '../constants/messages'
+import type { ApiResponse } from '../types/response'
+import type { BookingFilters, BookingsResponse, BookingWithRelations } from '../types/booking'
 
 const router = Router()
 
@@ -20,31 +23,34 @@ const validateBookingQuery = [
   query('pageSize').optional().isInt({ min: 1, max: 100 }).withMessage('Must be between 1 and 100').toInt(),
 ]
 
-router.get('/', validateBookingQuery, async (req: Request, res: Response) => {
+router.get('/', validateBookingQuery, async (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    return res.status(400).json({ error: errors.array().map((e) => e.msg).join('; ') })
+    const message = errors.array().map(e => e.msg).join('; ')
+    const { status } = API_MESSAGES.BOOKINGS.INVALID_QUERY
+    return res.status(status).json({ payload: null, message, isOk: false })
   }
 
   try {
     const result = await getBookings(req.query as unknown as BookingFilters)
-    return res.json(result)
+    const { message, isOk } = API_MESSAGES.BOOKINGS.LIST_OK
+    return res.json({ payload: result, message, isOk })
   } catch (err) {
-    console.error('GET /api/bookings error:', err)
-    return res.status(500).json({ error: 'Internal server error' })
+    return next(err)
   }
 })
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const booking = await getBookingById(req.params.id)
     if (!booking) {
-      return res.status(404).json({ error: `Booking with id "${req.params.id}" not found` })
+      const { message, status, isOk } = API_MESSAGES.BOOKINGS.NOT_FOUND
+      return res.status(status).json({ payload: null, message, isOk })
     }
-    return res.json({ data: booking })
+    const { message, isOk } = API_MESSAGES.BOOKINGS.FOUND
+    return res.json({ payload: booking, message, isOk })
   } catch (err) {
-    console.error(`GET /api/bookings/${req.params.id} error:`, err)
-    return res.status(500).json({ error: 'Internal server error' })
+    return next(err)
   }
 })
 

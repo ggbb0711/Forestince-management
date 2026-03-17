@@ -42,7 +42,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           </div>
           <div>
             <div className="text-white font-extrabold text-sm tracking-tight">Forestince</div>
-            <div className="text-brand text-[9px] font-medium opacity-80">Nature Campus Admin</div>
+            <div className="text-[#94A3B8] text-[9px] font-medium opacity-80">Nature Campus Admin</div>
           </div>
         </div>
         {onClose && (
@@ -57,7 +57,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       <nav className="flex-1 px-2.5">
         {NAV_ITEMS.map(({ label, path, Icon }) => {
-          const isActive = location.pathname === path
+          const isActive = path === '/' ? location.pathname === path : location.pathname.startsWith(path)
           return (
             <Link
               key={label}

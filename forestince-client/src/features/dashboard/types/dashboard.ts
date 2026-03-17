@@ -1,7 +1,7 @@
 export interface Booking {
   id: string
   startTime: string
-  facility: { id: string; name: string; type: string }
+  facility: { id: number; name: string }
   user: { id: string; name: string; company: { name: string } }
   status: string
   notes: string | null

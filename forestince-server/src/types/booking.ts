@@ -1,5 +1,6 @@
+import type { PaginationMeta } from './pagination'
+
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
-export type FacilityType = 'MEDITATION' | 'SPRING' | 'TRAIL' | 'GARDEN' | 'POD'
 
 export interface BookingFilters {
   status?: BookingStatus
@@ -10,13 +11,6 @@ export interface BookingFilters {
   search?: string
   page?: number
   pageSize?: number
-}
-
-export interface PaginationMeta {
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
 }
 
 export interface BookingsResponse {
@@ -30,14 +24,13 @@ export type BookingWithRelations = {
   endTime: Date
   status: string
   notes: string | null
-  facilityId: string
+  facilityId: number
   userId: string
   createdAt: Date
   updatedAt: Date
   facility: {
-    id: string
+    id: number
     name: string
-    type: string
     createdAt: Date
     updatedAt: Date
   }
