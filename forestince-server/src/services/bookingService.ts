@@ -31,8 +31,8 @@ export async function getBookings(filters: BookingFilters): Promise<BookingsResp
 
   if (dateFrom || dateTo) {
     where.startTime = {}
-    if (dateFrom) (where.startTime as Prisma.DateTimeFilter).gte = dateFrom
-    if (dateTo) (where.startTime as Prisma.DateTimeFilter).lte = dateTo
+    if (dateFrom) where.startTime.gte = dateFrom
+    if (dateTo) where.startTime.lte = dateTo
   }
 
   if (search) {
@@ -57,7 +57,7 @@ export async function getBookings(filters: BookingFilters): Promise<BookingsResp
   ])
 
   return {
-    data: bookings as BookingWithRelations[],
+    data: bookings,
     meta: {
       total,
       page,
@@ -73,5 +73,5 @@ export async function getBookingById(id: string): Promise<BookingWithRelations |
     include: bookingInclude,
   })
 
-  return booking as BookingWithRelations | null
+  return booking
 }

@@ -12,7 +12,7 @@ export async function getFacilities(): Promise<FacilityWithCount[]> {
   const facilities = await prisma.facility.findMany({
     include: facilityInclude,
   })
-  return facilities as unknown as FacilityWithCount[]
+  return facilities 
 }
 
 export async function getFacilityById(id: number): Promise<FacilityWithCount | null> {
@@ -20,5 +20,5 @@ export async function getFacilityById(id: number): Promise<FacilityWithCount | n
     where: { id },
     include: facilityInclude,
   })
-  return facility as unknown as FacilityWithCount | null
+  return facility 
 }

@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client'
 import prisma from '../lib/prisma'
 import type { DashboardWindow, DashboardSummary, DashboardStats, FacilityUsageStat } from '../types/dashboard'
-import type { BookingWithRelations } from '../types/booking'
 
 const WINDOW_MS: Record<DashboardWindow, number> = {
   '24h': 24 * 60 * 60 * 1000,
@@ -104,6 +103,6 @@ export async function getDashboardSummary(window: DashboardWindow = '28d'): Prom
   return {
     stats,
     facilityUsage,
-    recentBookings: recentBookingsRaw as unknown as BookingWithRelations[],
+    recentBookings: recentBookingsRaw,
   }
 }
