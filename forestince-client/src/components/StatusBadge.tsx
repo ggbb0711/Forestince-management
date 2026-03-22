@@ -10,10 +10,10 @@ const STATUS_VARIANT: Record<BookingStatus, BadgeVariant> = {
 }
 
 interface StatusBadgeProps {
-  status: string
+  status: BookingStatus
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-  const variant = STATUS_VARIANT[status.toUpperCase()] ?? 'default'
+  const variant = STATUS_VARIANT[status] ?? 'default'
   return <Badge variant={variant}>{status}</Badge>
 }
