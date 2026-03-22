@@ -1,21 +1,12 @@
 import { StatusBadge } from '../../../../components/StatusBadge'
-import { Skeleton } from '../../../../components/ui/skeleton'
 import { formatDateTime } from '../../../../lib/formatDateTime'
 import type { ListProps } from './types'
 
-export function MobileBookingsList({ bookings, loading, error, onRowClick }: ListProps) {
+export function MobileBookingsList({ bookings, onRowClick }: ListProps) {
   return (
     <div className="flex flex-col gap-3 lg:hidden">
-      {error && <div className="text-red-700 text-[13px] px-1">{error}</div>}
-
-      {loading ? (
-        Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="bg-white rounded-xl shadow-sm p-4 flex flex-col gap-2">
-            <Skeleton className="h-4 w-1/2" />
-            <Skeleton className="h-3.5 w-2/3" />
-            <Skeleton className="h-3.5 w-1/3" />
-          </div>
-        ))
+      {bookings.length === 0 ? (
+        <div className="text-[13px] text-fg-muted text-center py-6">No bookings found.</div>
       ) : (
         bookings.map(b => (
           <div
@@ -31,10 +22,6 @@ export function MobileBookingsList({ bookings, loading, error, onRowClick }: Lis
             <StatusBadge status={b.status} />
           </div>
         ))
-      )}
-
-      {!loading && !error && bookings.length === 0 && (
-        <div className="text-[13px] text-fg-muted text-center py-6">No bookings found.</div>
       )}
     </div>
   )
