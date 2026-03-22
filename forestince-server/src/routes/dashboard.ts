@@ -19,7 +19,7 @@ router.get(
   '/',
   validate({ query: dashboardQuerySchema }),
   async (req: Request, res: Response<ApiResponse<DashboardSummary>>, next: NextFunction) => {
-    const { window: w } = req.query as unknown as z.infer<typeof dashboardQuerySchema>
+    const { window: w } = req.query as z.infer<typeof dashboardQuerySchema>
     const win = w ?? DashboardWindow.DAYS_28
     try {
       const summary = await getDashboardSummary(win)

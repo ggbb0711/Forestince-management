@@ -32,7 +32,7 @@ router.get(
     next: NextFunction,
   ) => {
     try {
-      const { id } = req.params as unknown as { id: number }
+      const id = Number(req.params.id)
       const facility = await getFacilityById(id)
       if (!facility) {
         const { message, status, isOk } = API_MESSAGES.FACILITIES.NOT_FOUND

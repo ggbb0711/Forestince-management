@@ -27,8 +27,8 @@ router.get(
     next: NextFunction,
   ) => {
     try {
-      const { id } = req.params as unknown as { id: number }
-      const { dateFrom, dateTo } = req.query as unknown as z.infer<typeof facilityStatsQuerySchema>
+      const id = Number(req.params.id)
+      const { dateFrom, dateTo } = req.query as z.infer<typeof facilityStatsQuerySchema>
       const stats = await getFacilityStats(id, dateFrom, dateTo)
       if (!stats) {
         const { message, status, isOk } = API_MESSAGES.FACILITY_STATS.NOT_FOUND

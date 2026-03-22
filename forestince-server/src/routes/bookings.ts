@@ -41,7 +41,7 @@ router.get(
   validate({ query: bookingQuerySchema }),
   async (req: Request, res: Response<ApiResponse<BookingsResponse>>, next: NextFunction) => {
     try {
-      const filters = req.query as unknown as BookingFilters
+      const filters = req.query as BookingFilters
       const result = await getBookings(filters)
       const { message, isOk } = API_MESSAGES.BOOKINGS.LIST_OK
       return res.json({ payload: result, message, isOk })
