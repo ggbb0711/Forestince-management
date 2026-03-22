@@ -1,11 +1,12 @@
 import { Prisma } from '@prisma/client'
 import prisma from '../lib/prisma'
-import type { DashboardWindow, DashboardSummary, DashboardStats, FacilityUsageStat } from '../types/dashboard'
+import { DashboardWindow } from '../types/dashboard'
+import type { DashboardSummary, DashboardStats, FacilityUsageStat } from '../types/dashboard'
 
 const WINDOW_MS: Record<DashboardWindow, number> = {
-  '24h': 24 * 60 * 60 * 1000,
-  '7d':  7 * 24 * 60 * 60 * 1000,
-  '28d': 28 * 24 * 60 * 60 * 1000,
+  [DashboardWindow.HOURS_24]: 24 * 60 * 60 * 1000,
+  [DashboardWindow.DAYS_7]:   7 * 24 * 60 * 60 * 1000,
+  [DashboardWindow.DAYS_28]:  28 * 24 * 60 * 60 * 1000,
 }
 
 const bookingInclude = {
@@ -20,7 +21,7 @@ function formatChange(current: number, previous: number): string | null {
   return pct > 0 ? `+${pct}%` : `${pct}%`
 }
 
-export async function getDashboardSummary(window: DashboardWindow = '28d'): Promise<DashboardSummary> {
+export async function getDashboardSummary(window: DashboardWindow = DashboardWindow.DAYS_28): Promise<DashboardSummary> {
   const windowMs     = WINDOW_MS[window]
   const windowStart  = new Date(Date.now() - windowMs)
   const prevStart    = new Date(Date.now() - 2 * windowMs)

@@ -1,28 +1,26 @@
 import { Router } from 'express'
 import type { Request, Response, NextFunction } from 'express'
-import { query, matchedData } from 'express-validator'
+import { z } from 'zod'
 import { getDashboardSummary } from '../services/dashboardService'
 import { API_MESSAGES } from '../constants/messages'
-import { type DashboardWindow, type DashboardSummary, VALID_WINDOWS } from '../types/dashboard'
-import { validateRequest } from '../middleware/validateRequest'
+import { DashboardWindow, type DashboardSummary } from '../types/dashboard'
+import { validate } from '../middleware/validateRequest'
 import type { ApiResponse } from '../types/response'
 
 const router = Router()
 
-const validateDashboard = [
-  query('window')
-    .optional()
-    .isIn(VALID_WINDOWS)
-    .withMessage(API_MESSAGES.DASHBOARD.INVALID_WINDOW.message),
-  validateRequest,
-]
+const dashboardQuerySchema = z.object({
+  window: z
+    .enum(DashboardWindow, { error: API_MESSAGES.DASHBOARD.INVALID_WINDOW.message })
+    .optional(),
+})
 
 router.get(
   '/',
-  validateDashboard,
+  validate({ query: dashboardQuerySchema }),
   async (req: Request, res: Response<ApiResponse<DashboardSummary>>, next: NextFunction) => {
-    const { window: w } = matchedData<{ window?: DashboardWindow }>(req, { locations: ['query'] })
-    const win = w ?? '28d'
+    const { window: w } = req.query as unknown as z.infer<typeof dashboardQuerySchema>
+    const win = w ?? DashboardWindow.DAYS_28
     try {
       const summary = await getDashboardSummary(win)
       const { message, isOk } = API_MESSAGES.DASHBOARD.OK

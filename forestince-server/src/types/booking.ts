@@ -1,6 +1,11 @@
 import type { PaginationMeta } from './pagination'
 
-export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
+export enum BookingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
+}
 
 export interface BookingFilters {
   status?: BookingStatus

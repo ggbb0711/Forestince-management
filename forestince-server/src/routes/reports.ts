@@ -1,42 +1,34 @@
 import { Router } from 'express'
 import type { Request, Response, NextFunction } from 'express'
-import { param, query, matchedData } from 'express-validator'
+import { z } from 'zod'
 import { getFacilityStats } from '../services/reportService'
 import { API_MESSAGES } from '../constants/messages'
-import { validateRequest } from '../middleware/validateRequest'
+import { validate } from '../middleware/validateRequest'
 import type { FacilityStatBreakdown } from '../types/report'
 import type { ApiResponse } from '../types/response'
 
 const router = Router()
 
-const validateFacilityStats = [
-  param('id')
-    .isInt({ min: 1 })
-    .withMessage(API_MESSAGES.FACILITY_STATS.INVALID_ID.message)
-    .toInt(),
-  query('dateFrom')
-    .optional()
-    .isISO8601()
-    .withMessage('dateFrom must be a valid ISO date')
-    .toDate(),
-  query('dateTo')
-    .optional()
-    .isISO8601()
-    .withMessage('dateTo must be a valid ISO date')
-    .toDate(),
-  validateRequest,
-]
+const facilityStatsParamsSchema = z.object({
+  id: z.coerce.number().int().min(1, { message: API_MESSAGES.FACILITY_STATS.INVALID_ID.message }),
+})
+
+const facilityStatsQuerySchema = z.object({
+  dateFrom: z.coerce.date({ message: API_MESSAGES.FACILITY_STATS.INVALID_DATE.message }).optional(),
+  dateTo: z.coerce.date({ message: API_MESSAGES.FACILITY_STATS.INVALID_DATE.message }).optional(),
+})
 
 router.get(
   '/facility-stats/:id',
-  validateFacilityStats,
+  validate({ params: facilityStatsParamsSchema, query: facilityStatsQuerySchema }),
   async (
     req: Request<{ id: string }>,
     res: Response<ApiResponse<FacilityStatBreakdown | null>>,
     next: NextFunction,
   ) => {
     try {
-      const { id, dateFrom, dateTo } = matchedData<{ id: number; dateFrom?: Date; dateTo?: Date }>(req)
+      const { id } = req.params as unknown as { id: number }
+      const { dateFrom, dateTo } = req.query as unknown as z.infer<typeof facilityStatsQuerySchema>
       const stats = await getFacilityStats(id, dateFrom, dateTo)
       if (!stats) {
         const { message, status, isOk } = API_MESSAGES.FACILITY_STATS.NOT_FOUND

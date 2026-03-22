@@ -1,36 +1,47 @@
 import { Router } from 'express'
 import type { Request, Response, NextFunction } from 'express'
-import { query, matchedData } from 'express-validator'
+import { z } from 'zod'
 import { getBookings, getBookingById } from '../services/bookingService'
 import { API_MESSAGES } from '../constants/messages'
-import { validateRequest } from '../middleware/validateRequest'
+import { validate } from '../middleware/validateRequest'
+import { BookingStatus } from '../types/booking'
 import type { BookingFilters, BookingsResponse, BookingWithRelations } from '../types/booking'
 import type { ApiResponse } from '../types/response'
 
 const router = Router()
 
-const validateBookingQuery = [
-  query('status')
-    .optional()
-    .toUpperCase()
-    .isIn(['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'])
-    .withMessage('Must be one of: PENDING, CONFIRMED, CANCELLED, COMPLETED'),
-  query('facilityId').optional().isString(),
-  query('userId').optional().isString(),
-  query('dateFrom').optional().isISO8601().withMessage('Must be a valid ISO date').toDate(),
-  query('dateTo').optional().isISO8601().withMessage('Must be a valid ISO date').toDate(),
-  query('search').optional().isString(),
-  query('page').optional().isInt({ min: 1 }).withMessage('Must be a positive integer').toInt(),
-  query('pageSize').optional().isInt({ min: 1, max: 100 }).withMessage('Must be between 1 and 100').toInt(),
-  validateRequest,
-]
+const bookingQuerySchema = z.object({
+  status: z
+    .string()
+    .transform((s) => s.toUpperCase())
+    .pipe(
+      z.enum(BookingStatus, { error: API_MESSAGES.BOOKINGS.INVALID_STATUS.message }),
+    )
+    .optional(),
+  facilityId: z.string().optional(),
+  userId: z.string().optional(),
+  dateFrom: z.coerce.date({ message: API_MESSAGES.BOOKINGS.INVALID_DATE.message }).optional(),
+  dateTo: z.coerce.date({ message: API_MESSAGES.BOOKINGS.INVALID_DATE.message }).optional(),
+  search: z.string().optional(),
+  page: z.coerce
+    .number({ message: API_MESSAGES.BOOKINGS.INVALID_PAGE.message })
+    .int()
+    .min(1, { message: API_MESSAGES.BOOKINGS.INVALID_PAGE.message })
+    .optional(),
+  pageSize: z.coerce
+    .number({ message: API_MESSAGES.BOOKINGS.INVALID_PAGE_SIZE.message })
+    .int()
+    .min(1, { message: API_MESSAGES.BOOKINGS.INVALID_PAGE_SIZE.message })
+    .max(100, { message: API_MESSAGES.BOOKINGS.INVALID_PAGE_SIZE.message })
+    .optional(),
+})
 
 router.get(
   '/',
-  validateBookingQuery,
+  validate({ query: bookingQuerySchema }),
   async (req: Request, res: Response<ApiResponse<BookingsResponse>>, next: NextFunction) => {
     try {
-      const filters = matchedData<BookingFilters>(req, { locations: ['query'] })
+      const filters = req.query as unknown as BookingFilters
       const result = await getBookings(filters)
       const { message, isOk } = API_MESSAGES.BOOKINGS.LIST_OK
       return res.json({ payload: result, message, isOk })

@@ -10,6 +10,10 @@ export const API_MESSAGES = {
     FOUND: { message: 'Booking retrieved successfully', status: 200, isOk: true  },
     NOT_FOUND: { message: 'Booking not found', status: 404, isOk: false },
     INVALID_QUERY: { message: 'Invalid query parameters', status: 400, isOk: false },
+    INVALID_STATUS: { message: 'Status must be one of: PENDING, CONFIRMED, CANCELLED, COMPLETED', status: 400, isOk: false },
+    INVALID_DATE: { message: 'Must be a valid ISO date', status: 400, isOk: false },
+    INVALID_PAGE: { message: 'Page must be a positive integer', status: 400, isOk: false },
+    INVALID_PAGE_SIZE: { message: 'Page size must be between 1 and 100', status: 400, isOk: false },
   },
   DASHBOARD: {
     OK: { message: 'Dashboard data retrieved successfully', status: 200, isOk: true  },
@@ -19,6 +23,7 @@ export const API_MESSAGES = {
     OK: { message: 'Facility stats retrieved successfully', status: 200, isOk: true  },
     NOT_FOUND: { message: 'Facility not found', status: 404, isOk: false },
     INVALID_ID: { message: 'Facility id must be a number', status: 400, isOk: false },
+    INVALID_DATE: { message: 'Must be a valid ISO date', status: 400, isOk: false },
   },
   GENERAL: {
     INTERNAL_ERROR: { message: 'Internal server error', status: 500, isOk: false },

@@ -1,7 +1,10 @@
 import type { BookingWithRelations } from './booking'
 
-export type DashboardWindow = '24h' | '7d' | '28d'
-export const VALID_WINDOWS: DashboardWindow[] = ['24h', '7d', '28d']
+export enum DashboardWindow {
+  HOURS_24 = '24h',
+  DAYS_7 = '7d',
+  DAYS_28 = '28d',
+}
 
 export interface DashboardStats {
   totalBookings: number
