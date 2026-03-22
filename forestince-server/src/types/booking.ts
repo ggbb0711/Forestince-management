@@ -29,13 +29,14 @@ export type BookingWithRelations = {
   endTime: Date
   status: string
   notes: string | null
-  facilityId: number
+  facilityId: string
   userId: string
   createdAt: Date
   updatedAt: Date
   facility: {
-    id: number
+    id: string
     name: string
+    facilityIcon: string
     createdAt: Date
     updatedAt: Date
   }
@@ -43,14 +44,8 @@ export type BookingWithRelations = {
     id: string
     name: string
     email: string
-    companyId: string
+    companyName: string
     createdAt: Date
     updatedAt: Date
-    company: {
-      id: string
-      name: string
-      createdAt: Date
-      updatedAt: Date
-    }
   }
 }

@@ -14,7 +14,7 @@ function toISODateString(d: Date): string {
 
 
 export async function getFacilityStats(
-  facilityId: number,
+  facilityId: string,
   dateFrom?: Date,
   dateTo?: Date
 ): Promise<FacilityStatBreakdown | null> {
@@ -56,7 +56,6 @@ export async function getFacilityStats(
   const users = userIds.length > 0
     ? await prisma.user.findMany({
         where: { id: { in: userIds } },
-        include: { company: true },
       })
     : []
 
@@ -69,7 +68,7 @@ export async function getFacilityStats(
         rank: 0,
         userId: g.userId,
         userName: u?.name ?? 'Unknown',
-        companyName: u?.company?.name ?? 'Unknown',
+        companyName: u?.companyName ?? 'Unknown',
         bookingCount: g._count.id,
       }
     })

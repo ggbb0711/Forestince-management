@@ -44,7 +44,7 @@ export function BookingDetailView({ booking }: BookingDetailViewProps) {
         <Field label="Duration" value={computeDuration(booking.startTime, booking.endTime)} />
         <Field label="Employee" value={booking.user.name} />
         <Field label="Email" value={booking.user.email} />
-        <Field label="Company" value={booking.user.company.name} />
+        <Field label="Company" value={booking.user.companyName} />
         <Field label="Notes" value={booking.notes ?? <span className="text-fg-muted italic">None</span>} />
         <Field label="Created" value={formatDateTime(booking.createdAt)} />
         <Field label="Updated" value={formatDateTime(booking.updatedAt)} />

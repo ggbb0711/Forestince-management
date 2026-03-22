@@ -5,8 +5,8 @@ export type DashboardWindow = '24h' | '7d' | '28d'
 export interface Booking {
   id: string
   startTime: string
-  facility: { id: number; name: string }
-  user: { id: string; name: string; company: { name: string } }
+  facility: { id: string; name: string; facilityIcon: string }
+  user: { id: string; name: string; companyName: string }
   status: BookingStatus
   notes: string | null
 }
@@ -39,7 +39,7 @@ export interface DashboardStats {
 }
 
 export interface FacilityUsageStat {
-  facilityId: number
+  facilityId: string
   facilityName: string
   bookingCount: number
   pct: number

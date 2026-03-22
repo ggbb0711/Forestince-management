@@ -12,7 +12,7 @@ export interface DailyUsage {
 }
 
 export interface FacilityStatBreakdown {
-  facilityId: number
+  facilityId: string
   facilityName: string
   totalBookings: number
   confirmed: number

@@ -1,11 +1,12 @@
+import { BookingStatus } from '../lib/bookingStatus'
 import { Badge } from './ui/badge'
 import type { BadgeVariant } from './ui/badge'
 
-const STATUS_VARIANT: Record<string, BadgeVariant> = {
-  CONFIRMED: 'confirmed',
-  PENDING: 'pending',
-  COMPLETED: 'completed',
-  CANCELLED: 'cancelled',
+const STATUS_VARIANT: Record<BookingStatus, BadgeVariant> = {
+  [BookingStatus.CONFIRMED]: 'confirmed',
+  [BookingStatus.PENDING]: 'pending',
+  [BookingStatus.COMPLETED]: 'completed',
+  [BookingStatus.CANCELLED]: 'cancelled',
 }
 
 interface StatusBadgeProps {

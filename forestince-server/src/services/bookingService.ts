@@ -4,11 +4,7 @@ import { BookingFilters, BookingWithRelations, BookingsResponse } from '../types
 
 const bookingInclude = {
   facility: true,
-  user: {
-    include: {
-      company: true,
-    },
-  },
+  user: true,
 } satisfies Prisma.BookingInclude
 
 export async function getBookings(filters: BookingFilters): Promise<BookingsResponse> {
@@ -26,7 +22,7 @@ export async function getBookings(filters: BookingFilters): Promise<BookingsResp
   const where: Prisma.BookingWhereInput = {}
 
   if (status) where.status = status
-  if (facilityId) (where as Record<string, unknown>).facilityId = parseInt(facilityId, 10)
+  if (facilityId) where.facilityId = facilityId
   if (userId) where.userId = userId
 
   if (dateFrom || dateTo) {

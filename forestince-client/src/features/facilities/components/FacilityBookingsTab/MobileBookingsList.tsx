@@ -16,7 +16,7 @@ export function MobileBookingsList({ bookings, onRowClick }: ListProps) {
           >
             <div className="min-w-0">
               <div className="font-bold text-[13px] text-color-fg truncate">{b.user.name}</div>
-              <div className="text-[11px] text-fg-muted">{b.user.company.name}</div>
+              <div className="text-[11px] text-fg-muted">{b.user.companyName}</div>
               <div className="text-[11px] text-fg-muted mt-0.5">{formatDateTime(b.startTime)}</div>
             </div>
             <StatusBadge status={b.status} />

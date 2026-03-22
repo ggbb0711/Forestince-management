@@ -35,7 +35,7 @@ function MobileBookingsPanel({ bookings, onViewAll, onBookingClick }: ListProps)
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2 mb-0.5">
               <div className="flex items-center gap-2 min-w-0">
-                <FacilityTypeIcon id={b.facility.id} size={14} color="#2e7d32" />
+                <FacilityTypeIcon iconName={b.facility.facilityIcon} size={14} color="#2e7d32" />
                 <span className="font-bold text-[13px] text-color-fg truncate">{b.facility.name}</span>
               </div>
               <StatusBadge status={b.status} />
@@ -84,7 +84,7 @@ function DesktopBookingsPanel({ bookings, onViewAll, onBookingClick }: ListProps
             >
               <div className="flex items-center gap-2 min-w-0">
                 <div className="w-7 h-7 rounded-[7px] bg-good-icon-bg flex items-center justify-center shrink-0">
-                  <FacilityTypeIcon id={b.facility.id} size={14} color="#2e7d32" />
+                  <FacilityTypeIcon iconName={b.facility.facilityIcon} size={14} color="#2e7d32" />
                 </div>
                 <span className="font-semibold text-xs text-color-fg truncate">{b.facility.name}</span>
               </div>

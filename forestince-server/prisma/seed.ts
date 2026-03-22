@@ -32,41 +32,31 @@ async function main() {
   await prisma.booking.deleteMany()
   await prisma.user.deleteMany()
   await prisma.facility.deleteMany()
-  await prisma.company.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name IN ('facilities', 'bookings', 'users', 'companies')`
-
-  const [nordic, fjord, skogen, viken, havet] = await Promise.all([
-    prisma.company.create({ data: { name: 'Nordic Ventures AB' } }),
-    prisma.company.create({ data: { name: 'Fjord Systems AS' } }),
-    prisma.company.create({ data: { name: 'Skogen Innovations ApS' } }),
-    prisma.company.create({ data: { name: 'Viken Capital Group' } }),
-    prisma.company.create({ data: { name: 'Havet Marine AS' } }),
-  ])
 
   const [meditationHut, crystalSpring, oakTrail, zenGarden, silentPod] = await Promise.all([
-    prisma.facility.create({ data: { name: 'Birch Meditation Hut' } }),
-    prisma.facility.create({ data: { name: 'Crystal Spring Bath' } }),
-    prisma.facility.create({ data: { name: 'Old Oak Forest Trail' } }),
-    prisma.facility.create({ data: { name: 'Zen Garden Deck' } }),
-    prisma.facility.create({ data: { name: 'Silent Retreat Pod' } }),
+    prisma.facility.create({ data: { name: 'Birch Meditation Hut', facilityIcon: 'HutIcon' } }),
+    prisma.facility.create({ data: { name: 'Crystal Spring Bath',  facilityIcon: 'SwimmingIcon' } }),
+    prisma.facility.create({ data: { name: 'Old Oak Forest Trail', facilityIcon: 'HikingIcon' } }),
+    prisma.facility.create({ data: { name: 'Zen Garden Deck',      facilityIcon: 'ZenIcon' } }),
+    prisma.facility.create({ data: { name: 'Silent Retreat Pod',   facilityIcon: 'MindGearIcon' } }),
   ])
 
   const users = await Promise.all([
-    prisma.user.create({ data: { name: 'Marcus Arvidson',  email: 'marcus.arvidson@nordic.se',   companyId: nordic.id } }),
-    prisma.user.create({ data: { name: 'Lina Bergman',     email: 'lina.bergman@nordic.se',      companyId: nordic.id } }),
-    prisma.user.create({ data: { name: 'Erik Nilsson',     email: 'erik.nilsson@nordic.se',      companyId: nordic.id } }),
-    prisma.user.create({ data: { name: 'Hans Petersen',    email: 'hans.petersen@nordic.se',     companyId: nordic.id } }),
-    prisma.user.create({ data: { name: 'Sarah Jenkins',    email: 'sarah.jenkins@fjord.no',      companyId: fjord.id } }),
-    prisma.user.create({ data: { name: 'Thomas Muller',    email: 'thomas.muller@fjord.no',      companyId: fjord.id } }),
-    prisma.user.create({ data: { name: 'Anna Halvorsen',   email: 'anna.halvorsen@fjord.no',     companyId: fjord.id } }),
-    prisma.user.create({ data: { name: 'Maja Andersen',    email: 'maja.andersen@fjord.no',      companyId: fjord.id } }),
-    prisma.user.create({ data: { name: 'Lars Svendsen',    email: 'lars.svendsen@skogen.dk',     companyId: skogen.id } }),
-    prisma.user.create({ data: { name: 'Ingrid Dahl',      email: 'ingrid.dahl@skogen.dk',       companyId: skogen.id } }),
-    prisma.user.create({ data: { name: 'Bjorn Eriksen',    email: 'bjorn.eriksen@skogen.dk',     companyId: skogen.id } }),
-    prisma.user.create({ data: { name: 'Emma Lindqvist',   email: 'emma.lindqvist@viken.se',     companyId: viken.id } }),
-    prisma.user.create({ data: { name: 'Patrik Sjoberg',   email: 'patrik.sjoberg@viken.se',     companyId: viken.id } }),
-    prisma.user.create({ data: { name: 'Sigrid Thoresen',  email: 'sigrid.thoresen@havet.no',    companyId: havet.id } }),
-    prisma.user.create({ data: { name: 'Nikolai Berg',     email: 'nikolai.berg@havet.no',       companyId: havet.id } }),
+    prisma.user.create({ data: { name: 'Marcus Arvidson',  email: 'marcus.arvidson@nordic.se',   companyName: 'Nordic Ventures AB' } }),
+    prisma.user.create({ data: { name: 'Lina Bergman',     email: 'lina.bergman@nordic.se',      companyName: 'Nordic Ventures AB' } }),
+    prisma.user.create({ data: { name: 'Erik Nilsson',     email: 'erik.nilsson@nordic.se',      companyName: 'Nordic Ventures AB' } }),
+    prisma.user.create({ data: { name: 'Hans Petersen',    email: 'hans.petersen@nordic.se',     companyName: 'Nordic Ventures AB' } }),
+    prisma.user.create({ data: { name: 'Sarah Jenkins',    email: 'sarah.jenkins@fjord.no',      companyName: 'Fjord Systems AS' } }),
+    prisma.user.create({ data: { name: 'Thomas Muller',    email: 'thomas.muller@fjord.no',      companyName: 'Fjord Systems AS' } }),
+    prisma.user.create({ data: { name: 'Anna Halvorsen',   email: 'anna.halvorsen@fjord.no',     companyName: 'Fjord Systems AS' } }),
+    prisma.user.create({ data: { name: 'Maja Andersen',    email: 'maja.andersen@fjord.no',      companyName: 'Fjord Systems AS' } }),
+    prisma.user.create({ data: { name: 'Lars Svendsen',    email: 'lars.svendsen@skogen.dk',     companyName: 'Skogen Innovations ApS' } }),
+    prisma.user.create({ data: { name: 'Ingrid Dahl',      email: 'ingrid.dahl@skogen.dk',       companyName: 'Skogen Innovations ApS' } }),
+    prisma.user.create({ data: { name: 'Bjorn Eriksen',    email: 'bjorn.eriksen@skogen.dk',     companyName: 'Skogen Innovations ApS' } }),
+    prisma.user.create({ data: { name: 'Emma Lindqvist',   email: 'emma.lindqvist@viken.se',     companyName: 'Viken Capital Group' } }),
+    prisma.user.create({ data: { name: 'Patrik Sjoberg',   email: 'patrik.sjoberg@viken.se',     companyName: 'Viken Capital Group' } }),
+    prisma.user.create({ data: { name: 'Sigrid Thoresen',  email: 'sigrid.thoresen@havet.no',    companyName: 'Havet Marine AS' } }),
+    prisma.user.create({ data: { name: 'Nikolai Berg',     email: 'nikolai.berg@havet.no',       companyName: 'Havet Marine AS' } }),
   ])
 
   const [marcus, lina, erik, hans, sarah, thomas, anna, maja, lars, ingrid, bjorn, emma, patrik, sigrid, nikolai] = users
@@ -127,7 +117,7 @@ async function main() {
     startTime: Date
     endTime: Date
     status: string
-    facilityId: number
+    facilityId: string
     userId: string
     notes: string | null
   }
@@ -161,7 +151,7 @@ async function main() {
   await prisma.booking.createMany({ data: bulkBookings })
 
   const totalBookings = explicitBookings.length + bulkBookings.length
-  console.log(`Seeded ${totalBookings} bookings across 5 facilities, ${users.length} users, and 5 companies.`)
+  console.log(`Seeded ${totalBookings} bookings across 5 facilities and ${users.length} users.`)
   console.log(`  - ${explicitBookings.length} explicit (recent/future)`)
   console.log(`  - ${bulkBookings.length} bulk historical`)
 }

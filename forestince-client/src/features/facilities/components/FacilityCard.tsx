@@ -16,7 +16,7 @@ export function FacilityCard({ facility, index }: FacilityCardProps) {
     >
       <div className="flex items-start justify-between">
         <div className="w-10 h-10 rounded-xl bg-good-icon-bg flex items-center justify-center">
-          <FacilityTypeIcon id={facility.id} size={20} color="#2e7d32" />
+          <FacilityTypeIcon iconName={facility.facilityIcon} size={20} color="#2e7d32" />
         </div>
         <span className="text-[11px] font-bold text-fg-muted font-mono">#{index}</span>
       </div>

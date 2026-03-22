@@ -22,7 +22,7 @@ export interface DashboardStats {
 }
 
 export interface FacilityUsageStat {
-  facilityId: number
+  facilityId: string
   facilityName: string
   bookingCount: number
   pct: number

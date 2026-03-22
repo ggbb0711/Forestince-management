@@ -7,38 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Company {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  users User[]
-
-  @@map("companies")
-}
-
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  companyId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  company  Company   @relation(fields: [companyId], references: [id])
-  bookings Booking[]
+  id          String    @id @default(cuid())
+  name        String
+  email       String    @unique
+  companyName String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  bookings    Booking[]
 
   @@map("users")
 }
 
 model Facility {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  bookings Booking[]
+  id           String    @id @default(cuid())
+  name         String    @unique
+  facilityIcon String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  bookings     Booking[]
 
   @@map("facilities")
 }
@@ -50,13 +37,12 @@ model Booking {
   /// PENDING | CONFIRMED | CANCELLED | COMPLETED
   status     String   @default("PENDING")
   notes      String?
-  facilityId Int
+  facilityId String
   userId     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  facility Facility @relation(fields: [facilityId], references: [id])
-  user     User     @relation(fields: [userId], references: [id])
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 
   @@map("bookings")
 }

@@ -26,7 +26,7 @@ export function DesktopBookingsList({ bookings, onRowClick }: ListProps) {
           >
             <div className="min-w-0">
               <div className="font-semibold text-xs text-color-fg truncate">{b.user.name}</div>
-              <div className="text-[11px] text-fg-muted truncate">{b.user.company.name}</div>
+              <div className="text-[11px] text-fg-muted truncate">{b.user.companyName}</div>
             </div>
             <span className="text-fg-muted text-xs">{formatDateTime(b.startTime)}</span>
             <span className="text-fg-muted text-xs">{formatDateTime(b.endTime)}</span>

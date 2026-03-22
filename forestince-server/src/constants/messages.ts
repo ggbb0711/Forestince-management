@@ -3,7 +3,7 @@ export const API_MESSAGES = {
     LIST_OK: { message: 'Facilities retrieved successfully', status: 200, isOk: true  },
     FOUND: { message: 'Facility retrieved successfully', status: 200, isOk: true  },
     NOT_FOUND: { message: 'Facility not found', status: 404, isOk: false },
-    INVALID_ID: { message: 'Facility id must be a number', status: 400, isOk: false },
+    INVALID_ID: { message: 'Invalid facility id', status: 400, isOk: false },
   },
   BOOKINGS: {
     LIST_OK: { message: 'Bookings retrieved successfully', status: 200, isOk: true  },
@@ -22,7 +22,7 @@ export const API_MESSAGES = {
   FACILITY_STATS: {
     OK: { message: 'Facility stats retrieved successfully', status: 200, isOk: true  },
     NOT_FOUND: { message: 'Facility not found', status: 404, isOk: false },
-    INVALID_ID: { message: 'Facility id must be a number', status: 400, isOk: false },
+    INVALID_ID: { message: 'Invalid facility id', status: 400, isOk: false },
     INVALID_DATE: { message: 'Must be a valid ISO date', status: 400, isOk: false },
   },
   GENERAL: {

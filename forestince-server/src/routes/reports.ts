@@ -10,7 +10,7 @@ import type { ApiResponse } from '../types/response'
 const router = Router()
 
 const facilityStatsParamsSchema = z.object({
-  id: z.coerce.number().int().min(1, { message: API_MESSAGES.FACILITY_STATS.INVALID_ID.message }),
+  id: z.string().min(1, { message: API_MESSAGES.FACILITY_STATS.INVALID_ID.message }),
 })
 
 const facilityStatsQuerySchema = z.object({
@@ -27,9 +27,8 @@ router.get(
     next: NextFunction,
   ) => {
     try {
-      const id = Number(req.params.id)
       const { dateFrom, dateTo } = req.query as z.infer<typeof facilityStatsQuerySchema>
-      const stats = await getFacilityStats(id, dateFrom, dateTo)
+      const stats = await getFacilityStats(req.params.id, dateFrom, dateTo)
       if (!stats) {
         const { message, status, isOk } = API_MESSAGES.FACILITY_STATS.NOT_FOUND
         return res.status(status).json({ payload: null, message, isOk })

@@ -15,7 +15,7 @@ export async function getFacilities(): Promise<FacilityWithCount[]> {
   return facilities 
 }
 
-export async function getFacilityById(id: number): Promise<FacilityWithCount | null> {
+export async function getFacilityById(id: string): Promise<FacilityWithCount | null> {
   const facility = await prisma.facility.findUnique({
     where: { id },
     include: facilityInclude,

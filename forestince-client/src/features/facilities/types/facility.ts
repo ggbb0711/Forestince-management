@@ -14,7 +14,7 @@ export interface DailyUsage {
 }
 
 export interface FacilityStatBreakdown {
-  facilityId: number
+  facilityId: string
   facilityName: string
   totalBookings: number
   confirmed: number
@@ -29,8 +29,9 @@ export interface FacilityStatBreakdown {
 }
 
 export interface Facility {
-  id: number
+  id: string
   name: string
+  facilityIcon: string
   createdAt: string
   updatedAt: string
   _count: { bookings: number }
@@ -42,12 +43,12 @@ export interface FacilityBooking {
   endTime: string
   status: BookingStatus
   notes: string | null
-  facilityId: number
+  facilityId: string
   userId: string
   createdAt: string
   updatedAt: string
-  facility: { id: number; name: string }
-  user: { id: string; name: string; email: string; company: { name: string } }
+  facility: { id: string; name: string; facilityIcon: string }
+  user: { id: string; name: string; email: string; companyName: string }
 }
 
 export interface BookingFilters {
@@ -58,4 +59,3 @@ export interface BookingFilters {
   page?: number
   pageSize?: number
 }
-

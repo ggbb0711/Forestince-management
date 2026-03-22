@@ -5,21 +5,21 @@ import { ZenIcon } from '../assets/icons/ZenIcon'
 import { MindGearIcon } from '../assets/icons/MindGearIcon'
 import type { JSX, SVGProps } from 'react'
 
-const FACILITY_ICONS: Record<number, (props: SVGProps<SVGSVGElement>) => JSX.Element> = {
-  1: (props) => <SwimmingIcon {...props} />,
-  2: (props) => <ZenIcon {...props} />,
-  3: (props) => <HutIcon {...props} />,
-  4: (props) => <MindGearIcon {...props} />,
-  5: (props) => <HikingIcon {...props} />,
+const FACILITY_ICONS: Record<string, (props: SVGProps<SVGSVGElement>) => JSX.Element> = {
+  HutIcon:      (props) => <HutIcon {...props} />,
+  SwimmingIcon: (props) => <SwimmingIcon {...props} />,
+  HikingIcon:   (props) => <HikingIcon {...props} />,
+  ZenIcon:      (props) => <ZenIcon {...props} />,
+  MindGearIcon: (props) => <MindGearIcon {...props} />,
 }
 
 interface FacilityTypeIconProps {
-  id: number
+  iconName: string
   size?: number
   color?: string
 }
 
-export function FacilityTypeIcon({ id, size = 14, color = '#2e7d32' }: FacilityTypeIconProps) {
-  const Icon = FACILITY_ICONS[id] ?? MindGearIcon
+export function FacilityTypeIcon({ iconName, size = 14, color = '#2e7d32' }: FacilityTypeIconProps) {
+  const Icon = FACILITY_ICONS[iconName] ?? MindGearIcon
   return <Icon width={size} height={size} color={color} />
 }

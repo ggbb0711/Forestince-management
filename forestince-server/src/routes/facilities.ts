@@ -10,7 +10,7 @@ import type { ApiResponse } from '../types/response'
 const router = Router()
 
 const facilityParamsSchema = z.object({
-  id: z.coerce.number().int().min(1, { message: API_MESSAGES.FACILITIES.INVALID_ID.message }),
+  id: z.string().min(1, { message: API_MESSAGES.FACILITIES.INVALID_ID.message }),
 })
 
 router.get('/', async (_req: Request, res: Response<ApiResponse<FacilityWithCount[]>>, next: NextFunction) => {
@@ -32,8 +32,7 @@ router.get(
     next: NextFunction,
   ) => {
     try {
-      const id = Number(req.params.id)
-      const facility = await getFacilityById(id)
+      const facility = await getFacilityById(req.params.id)
       if (!facility) {
         const { message, status, isOk } = API_MESSAGES.FACILITIES.NOT_FOUND
         return res.status(status).json({ payload: null, message, isOk })
