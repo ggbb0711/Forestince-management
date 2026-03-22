@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import type { Request, Response, NextFunction } from 'express'
 import { z } from 'zod'
-import { getDashboardSummary } from '../services/dashboardService'
+import { getDashboardStats, getDashboardUsage } from '../services/dashboardService'
 import { API_MESSAGES } from '../constants/messages'
-import { DashboardWindow, type DashboardSummary } from '../types/dashboard'
+import { DashboardWindow, type DashboardStats, type FacilityUsageStat } from '../types/dashboard'
 import { validate } from '../middleware/validateRequest'
 import type { ApiResponse } from '../types/response'
 
@@ -16,15 +16,29 @@ const dashboardQuerySchema = z.object({
 })
 
 router.get(
-  '/',
+  '/stats',
   validate({ query: dashboardQuerySchema }),
-  async (req: Request, res: Response<ApiResponse<DashboardSummary>>, next: NextFunction) => {
+  async (req: Request, res: Response<ApiResponse<DashboardStats>>, next: NextFunction) => {
     const { window: w } = req.query as z.infer<typeof dashboardQuerySchema>
-    const win = w ?? DashboardWindow.DAYS_28
     try {
-      const summary = await getDashboardSummary(win)
+      const stats = await getDashboardStats(w ?? DashboardWindow.DAYS_28)
       const { message, isOk } = API_MESSAGES.DASHBOARD.OK
-      return res.json({ payload: summary, message, isOk })
+      return res.json({ payload: stats, message, isOk })
+    } catch (err) {
+      return next(err)
+    }
+  },
+)
+
+router.get(
+  '/usage',
+  validate({ query: dashboardQuerySchema }),
+  async (req: Request, res: Response<ApiResponse<FacilityUsageStat[]>>, next: NextFunction) => {
+    const { window: w } = req.query as z.infer<typeof dashboardQuerySchema>
+    try {
+      const usage = await getDashboardUsage(w ?? DashboardWindow.DAYS_28)
+      const { message, isOk } = API_MESSAGES.DASHBOARD.OK
+      return res.json({ payload: usage, message, isOk })
     } catch (err) {
       return next(err)
     }

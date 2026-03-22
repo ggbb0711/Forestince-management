@@ -1,7 +1,7 @@
+import { use } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '../../../lib/utils'
 import { StatusBadge } from '../../../components/StatusBadge'
-import { Skeleton } from '../../../components/ui/skeleton'
 import { FacilityTypeIcon } from '../../../components/FacilityTypeIcon'
 import { Button } from '../../../components/ui/button'
 import { IconPlus } from '../../../assets/icons/IconPlus'
@@ -9,30 +9,13 @@ import { IconChevronRight } from '../../../assets/icons/IconChevronRight'
 import { formatDateTime } from '../../../lib/formatDateTime'
 import type { Booking } from '../types/dashboard'
 
-function SkeletonRows({ cols }: { cols: string }) {
-  return (
-    <>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className={cn(cols, 'gap-2 py-3 items-center border-b border-surface')}>
-          <Skeleton className="h-3.5 w-28" />
-          <Skeleton className="h-3 w-24" />
-          <Skeleton className="h-3 w-20" />
-          <Skeleton className="h-5 w-16 rounded-full" />
-        </div>
-      ))}
-    </>
-  )
-}
-
 interface ListProps {
   bookings: Booking[]
-  loading: boolean
-  error: string | null
   onViewAll: () => void
   onBookingClick: (booking: Booking) => void
 }
 
-function MobileBookingsPanel({ bookings, loading, error, onViewAll, onBookingClick }: ListProps) {
+function MobileBookingsPanel({ bookings, onViewAll, onBookingClick }: ListProps) {
   return (
     <div className="flex flex-col gap-3 lg:hidden">
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -43,24 +26,7 @@ function MobileBookingsPanel({ bookings, loading, error, onViewAll, onBookingCli
         </div>
       </div>
 
-      {loading && (
-        Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white rounded-xl shadow-sm px-3.5 py-3 flex items-start gap-3">
-            <div className="flex-1 min-w-0 flex flex-col gap-2">
-              <div className="flex items-center justify-between gap-2">
-                <Skeleton className="h-3.5 w-32" />
-                <Skeleton className="h-5 w-16 rounded-full" />
-              </div>
-              <Skeleton className="h-3 w-24" />
-              <Skeleton className="h-3 w-28" />
-            </div>
-          </div>
-        ))
-      )}
-
-      {error && <div className="text-red-700 text-[13px]">{error}</div>}
-
-      {!loading && !error && bookings.map(b => (
+      {bookings.map(b => (
         <div
           key={b.id}
           onClick={() => onBookingClick(b)}
@@ -84,7 +50,7 @@ function MobileBookingsPanel({ bookings, loading, error, onViewAll, onBookingCli
   )
 }
 
-function DesktopBookingsPanel({ bookings, loading, error, onViewAll, onBookingClick }: ListProps) {
+function DesktopBookingsPanel({ bookings, onViewAll, onBookingClick }: ListProps) {
   const COLS = 'grid grid-cols-[2fr_1.5fr_1.5fr_1fr]'
 
   return (
@@ -99,8 +65,6 @@ function DesktopBookingsPanel({ bookings, loading, error, onViewAll, onBookingCl
         </div>
       </div>
 
-      {error && <div className="text-red-700 text-[13px] py-5">{error}</div>}
-
       <div className="flex flex-col flex-1 overflow-hidden">
         <div className={cn(COLS, 'gap-2 pb-2.5 border-b border-surface shrink-0')}>
           {['FACILITY NAME', 'EMPLOYEE NAME', 'DATE/TIME', 'STATUS'].map(h => (
@@ -108,9 +72,7 @@ function DesktopBookingsPanel({ bookings, loading, error, onViewAll, onBookingCl
           ))}
         </div>
         <div className="overflow-auto flex-1">
-          {loading && <SkeletonRows cols={COLS} />}
-
-          {!loading && !error && bookings.map((b, i) => (
+          {bookings.map((b, i) => (
             <div
               key={b.id}
               onClick={() => onBookingClick(b)}
@@ -138,12 +100,11 @@ function DesktopBookingsPanel({ bookings, loading, error, onViewAll, onBookingCl
 }
 
 export interface BookingsPanelProps {
-  bookings: Booking[]
-  loading: boolean
-  error: string | null
+  promise: Promise<Booking[]>
 }
 
-export function BookingsPanel({ bookings, loading, error }: BookingsPanelProps) {
+export function BookingsPanel({ promise }: BookingsPanelProps) {
+  const bookings = use(promise)
   const navigate = useNavigate()
 
   function handleBookingClick(b: Booking) {
@@ -163,15 +124,11 @@ export function BookingsPanel({ bookings, loading, error }: BookingsPanelProps) 
     <div className="flex-1 flex flex-col min-w-0 gap-3">
       <MobileBookingsPanel
         bookings={bookings}
-        loading={loading}
-        error={error}
         onViewAll={handleViewAll}
         onBookingClick={handleBookingClick}
       />
       <DesktopBookingsPanel
         bookings={bookings}
-        loading={loading}
-        error={error}
         onViewAll={handleViewAll}
         onBookingClick={handleBookingClick}
       />

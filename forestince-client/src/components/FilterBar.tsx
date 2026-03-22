@@ -32,6 +32,20 @@ export function FilterBar({
 }: FilterBarProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 flex flex-wrap gap-3 items-end">
+
+      {showSearch && (
+        <div className="flex flex-col gap-1 flex-1 min-w-40">
+          <label className={LABEL_CLASS}>Search</label>
+          <input
+            type="text"
+            placeholder="Search by employee name..."
+            value={values.search ?? ''}
+            onChange={e => onChange({ search: e.target.value || undefined })}
+            className={INPUT_CLASS}
+          />
+        </div>
+      )}
+      
       {showStatus && (
         <div className="flex flex-col gap-1 min-w-35">
           <label className={LABEL_CLASS}>Status</label>
@@ -87,19 +101,6 @@ export function FilterBar({
           </select>
         </div>
       ))}
-
-      {showSearch && (
-        <div className="flex flex-col gap-1 flex-1 min-w-40">
-          <label className={LABEL_CLASS}>Search</label>
-          <input
-            type="text"
-            placeholder="Search by employee name..."
-            value={values.search ?? ''}
-            onChange={e => onChange({ search: e.target.value || undefined })}
-            className={INPUT_CLASS}
-          />
-        </div>
-      )}
 
       {hasActiveFilters && (
         <button

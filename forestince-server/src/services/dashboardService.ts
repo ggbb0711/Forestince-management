@@ -1,18 +1,12 @@
-import { Prisma } from '@prisma/client'
 import prisma from '../lib/prisma'
 import { DashboardWindow } from '../types/dashboard'
-import type { DashboardSummary, DashboardStats, FacilityUsageStat } from '../types/dashboard'
+import type { DashboardStats, FacilityUsageStat } from '../types/dashboard'
 
 const WINDOW_MS: Record<DashboardWindow, number> = {
   [DashboardWindow.HOURS_24]: 24 * 60 * 60 * 1000,
   [DashboardWindow.DAYS_7]:   7 * 24 * 60 * 60 * 1000,
   [DashboardWindow.DAYS_28]:  28 * 24 * 60 * 60 * 1000,
 }
-
-const bookingInclude = {
-  facility: true,
-  user: { include: { company: true } },
-} satisfies Prisma.BookingInclude
 
 function formatChange(current: number, previous: number): string | null {
   if (previous === 0) return current > 0 ? 'New' : null
@@ -21,10 +15,10 @@ function formatChange(current: number, previous: number): string | null {
   return pct > 0 ? `+${pct}%` : `${pct}%`
 }
 
-export async function getDashboardSummary(window: DashboardWindow = DashboardWindow.DAYS_28): Promise<DashboardSummary> {
-  const windowMs     = WINDOW_MS[window]
-  const windowStart  = new Date(Date.now() - windowMs)
-  const prevStart    = new Date(Date.now() - 2 * windowMs)
+export async function getDashboardStats(window: DashboardWindow = DashboardWindow.DAYS_28): Promise<DashboardStats> {
+  const windowMs    = WINDOW_MS[window]
+  const windowStart = new Date(Date.now() - windowMs)
+  const prevStart   = new Date(Date.now() - 2 * windowMs)
 
   const [
     totalBookings,
@@ -39,48 +33,30 @@ export async function getDashboardSummary(window: DashboardWindow = DashboardWin
     prevCancelledBookings,
     totalFacilities,
     registeredUsers,
-    facilityGroups,
-    facilitiesAll,
-    recentBookingsRaw,
   ] = await Promise.all([
-
     prisma.booking.count({ where: { startTime: { gte: windowStart } } }),
-    prisma.booking.count({ where: { status: 'PENDING',    startTime: { gte: windowStart } } }),
-    prisma.booking.count({ where: { status: 'CONFIRMED',  startTime: { gte: windowStart } } }),
-    prisma.booking.count({ where: { status: 'COMPLETED',  startTime: { gte: windowStart } } }),
-    prisma.booking.count({ where: { status: 'CANCELLED',  startTime: { gte: windowStart } } }),
+    prisma.booking.count({ where: { status: 'PENDING',   startTime: { gte: windowStart } } }),
+    prisma.booking.count({ where: { status: 'CONFIRMED', startTime: { gte: windowStart } } }),
+    prisma.booking.count({ where: { status: 'COMPLETED', startTime: { gte: windowStart } } }),
+    prisma.booking.count({ where: { status: 'CANCELLED', startTime: { gte: windowStart } } }),
 
     prisma.booking.count({ where: { startTime: { gte: prevStart, lt: windowStart } } }),
-    prisma.booking.count({ where: { status: 'PENDING',    startTime: { gte: prevStart, lt: windowStart } } }),
-    prisma.booking.count({ where: { status: 'CONFIRMED',  startTime: { gte: prevStart, lt: windowStart } } }),
-    prisma.booking.count({ where: { status: 'COMPLETED',  startTime: { gte: prevStart, lt: windowStart } } }),
-    prisma.booking.count({ where: { status: 'CANCELLED',  startTime: { gte: prevStart, lt: windowStart } } }),
+    prisma.booking.count({ where: { status: 'PENDING',   startTime: { gte: prevStart, lt: windowStart } } }),
+    prisma.booking.count({ where: { status: 'CONFIRMED', startTime: { gte: prevStart, lt: windowStart } } }),
+    prisma.booking.count({ where: { status: 'COMPLETED', startTime: { gte: prevStart, lt: windowStart } } }),
+    prisma.booking.count({ where: { status: 'CANCELLED', startTime: { gte: prevStart, lt: windowStart } } }),
 
     prisma.facility.count(),
     prisma.user.count(),
-
-    prisma.booking.groupBy({
-      by: ['facilityId'],
-      where: { startTime: { gte: windowStart } },
-      _count: { id: true },
-    }),
-    prisma.facility.findMany({ select: { id: true, name: true }, orderBy: { name: 'asc' } }),
-
-    prisma.booking.findMany({
-      where: { startTime: { gte: windowStart } },
-      include: bookingInclude,
-      orderBy: { startTime: 'desc' },
-      take: 5,
-    }),
   ])
 
-  const stats: DashboardStats = {
+  return {
     totalBookings,
-    totalBookingsChange: formatChange(totalBookings,    prevTotalBookings),
+    totalBookingsChange:     formatChange(totalBookings,     prevTotalBookings),
     pendingRequests,
-    pendingRequestsChange: formatChange(pendingRequests,  prevPendingRequests),
+    pendingRequestsChange:   formatChange(pendingRequests,   prevPendingRequests),
     activeBookings,
-    activeBookingsChange: formatChange(activeBookings,   prevActiveBookings),
+    activeBookingsChange:    formatChange(activeBookings,    prevActiveBookings),
     completedBookings,
     completedBookingsChange: formatChange(completedBookings, prevCompletedBookings),
     cancelledBookings,
@@ -88,11 +64,24 @@ export async function getDashboardSummary(window: DashboardWindow = DashboardWin
     totalFacilities,
     registeredUsers,
   }
+}
+
+export async function getDashboardUsage(window: DashboardWindow = DashboardWindow.DAYS_28): Promise<FacilityUsageStat[]> {
+  const windowStart = new Date(Date.now() - WINDOW_MS[window])
+
+  const [facilityGroups, facilitiesAll] = await Promise.all([
+    prisma.booking.groupBy({
+      by: ['facilityId'],
+      where: { startTime: { gte: windowStart } },
+      _count: { id: true },
+    }),
+    prisma.facility.findMany({ select: { id: true, name: true }, orderBy: { name: 'asc' } }),
+  ])
 
   const facilityNameMap = new Map(facilitiesAll.map(f => [f.id, f.name]))
   const maxCount = Math.max(...facilityGroups.map(g => g._count.id), 1)
 
-  const facilityUsage: FacilityUsageStat[] = facilityGroups
+  return facilityGroups
     .map(g => ({
       facilityId: g.facilityId,
       facilityName: facilityNameMap.get(g.facilityId) ?? 'Unknown',
@@ -100,10 +89,4 @@ export async function getDashboardSummary(window: DashboardWindow = DashboardWin
       pct: Math.round((g._count.id / maxCount) * 100),
     }))
     .sort((a, b) => b.bookingCount - a.bookingCount)
-
-  return {
-    stats,
-    facilityUsage,
-    recentBookings: recentBookingsRaw,
-  }
 }
