@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState, useTransition } from 'react'
+import { Suspense, useMemo, useState } from 'react'
 import { cn } from '../../lib/utils'
 import { Skeleton } from '../../components/ui/skeleton'
 import { StatsRow } from './components/StatsRow'
@@ -74,21 +74,20 @@ function UsageSkeleton() {
 
 export function DashboardPage() {
   const [window, setWindow] = useState<DashboardWindow>('28d')
-  const [isPending, startTransition] = useTransition()
 
   const statsPromise    = useMemo(() => getDashboardStats(window),  [window])
   const usagePromise    = useMemo(() => getDashboardUsage(window),  [window])
   const bookingsPromise = useMemo(() => getBookings(), [])
 
   function handleWindowChange(w: DashboardWindow) {
-    startTransition(() => setWindow(w))
+    setWindow(w)
   }
 
   return (
     <div className="flex-1 overflow-auto flex flex-col gap-4 p-4 lg:p-5">
       <div className="flex items-center justify-between flex-wrap gap-2 shrink-0">
         <h1 className="text-[15px] font-extrabold text-color-fg">Dashboard</h1>
-        <div className={cn('flex rounded-lg border border-muted bg-white shadow-sm overflow-hidden', isPending && 'opacity-60')}>
+        <div className={cn('flex rounded-lg border border-muted bg-white shadow-sm overflow-hidden')}>
           {WINDOWS.map(w => (
             <button
               key={w.value}
