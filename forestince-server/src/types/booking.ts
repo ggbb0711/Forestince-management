@@ -12,7 +12,7 @@ export interface CreateBookingInput {
 
 export interface BookingFilters {
   status?: BookingStatus
-  facilityId?: string
+  facilityId?: number
   userId?: string
   dateFrom?: Date
   dateTo?: Date

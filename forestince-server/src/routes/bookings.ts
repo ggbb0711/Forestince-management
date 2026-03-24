@@ -15,7 +15,7 @@ const validateBookingQuery = [
     .toUpperCase()
     .isIn(['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'])
     .withMessage('Must be one of: PENDING, CONFIRMED, CANCELLED, COMPLETED'),
-  query('facilityId').optional().isString(),
+  query('facilityId').optional().isInt({ min: 1 }).withMessage('Must be a positive integer').toInt(),
   query('userId').optional().isString(),
   query('dateFrom').optional().isISO8601().withMessage('Must be a valid ISO date').toDate(),
   query('dateTo').optional().isISO8601().withMessage('Must be a valid ISO date').toDate(),

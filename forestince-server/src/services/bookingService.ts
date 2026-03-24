@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client'
+import dayjs from '../lib/dayjs'
 import prisma from '../lib/prisma'
 import { BookingFilters, BookingWithRelations, BookingsResponse, CreateBookingInput } from '../types/booking'
 import { API_MESSAGES } from '../constants/messages'
@@ -29,7 +30,7 @@ export async function getBookings(filters: BookingFilters): Promise<BookingsResp
   const where: Prisma.BookingWhereInput = {}
 
   if (status) where.status = status
-  if (facilityId) (where as Record<string, unknown>).facilityId = parseInt(facilityId, 10)
+  if (facilityId) where.facilityId = facilityId
   if (userId) where.userId = userId
 
   if (dateFrom || dateTo) {
@@ -99,9 +100,11 @@ export async function createBooking(input: CreateBookingInput): Promise<BookingW
     throw new AppError(message, status)
   }
 
-  const startHour = startTime.getHours()
-  const endHour = endTime.getHours()
-  if (startHour < WORKING_HOURS.startHour || endHour > WORKING_HOURS.endHour) {
+  const startUtc = dayjs.utc(startTime)
+  const endUtc = dayjs.utc(endTime)
+  const workStart = startUtc.startOf('day').add(WORKING_HOURS.startHour, 'hour')
+  const workEnd = endUtc.startOf('day').add(WORKING_HOURS.endHour, 'hour')
+  if (startUtc.isBefore(workStart) || endUtc.isAfter(workEnd)) {
     const { message, status } = API_MESSAGES.BOOKINGS.OUTSIDE_WORKING_HOURS
     throw new AppError(message, status)
   }

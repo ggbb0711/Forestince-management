@@ -3,6 +3,7 @@ import AsyncSelect from 'react-select/async'
 import { useForm, Controller, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import dayjs from '../../../lib/dayjs'
 import { Button } from '../../../components/ui/button'
 import { useCreateBooking } from '../hooks/useCreateBooking'
 import { useFacilities } from '../../facilities/hooks/useFacilities'
@@ -19,7 +20,7 @@ async function loadUserOptions(input: string): Promise<UserOption[]> {
 
 function isInFuture(dateStr: string, timeStr: string): boolean {
   if (!dateStr || !timeStr) return false
-  return new Date(`${dateStr}T${timeStr}`).getTime() > Date.now()
+  return dayjs.utc(`${dateStr}T${timeStr}`).isAfter(dayjs.utc())
 }
 
 function todayString(): string {
@@ -27,8 +28,10 @@ function todayString(): string {
 }
 
 function isWithinWorkingHours(t: string): boolean {
-  const [h, m] = t.split(':').map(Number)
-  return h >= WORKING_HOURS.startHour && (h < WORKING_HOURS.endHour || (h === WORKING_HOURS.endHour && m === 0))
+  const time  = dayjs.utc(`1970-01-01T${t}`)
+  const start = dayjs.utc('1970-01-01').add(WORKING_HOURS.startHour, 'hour')
+  const end   = dayjs.utc('1970-01-01').add(WORKING_HOURS.endHour, 'hour')
+  return !time.isBefore(start) && !time.isAfter(end)
 }
 
 const bookingSchema = z.object({
@@ -80,8 +83,8 @@ export function BookingForm() {
     const booking = await submit({
       facilityId: Number(values.facilityId),
       userId: values.employee!.value,
-      startTime: new Date(`${values.date}T${values.startTime}`).toISOString(),
-      endTime: new Date(`${values.date}T${values.endTime}`).toISOString(),
+      startTime: dayjs.utc(`${values.date}T${values.startTime}`).toISOString(),
+      endTime: dayjs.utc(`${values.date}T${values.endTime}`).toISOString(),
       notes: values.notes?.trim() || undefined,
     })
     if (booking) navigate(`/facilities/${booking.facilityId}/bookings/${booking.id}`)
@@ -91,8 +94,9 @@ export function BookingForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 max-w-lg">
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-[12px] font-bold text-color-fg">Facility <span className="text-red-500">*</span></label>
+        <label htmlFor="facilityId" className="text-[12px] font-bold text-color-fg">Facility <span className="text-red-500">*</span></label>
         <select
+          id="facilityId"
           {...register('facilityId')}
           disabled={disabled || facilitiesLoading}
           className="w-full rounded-[9px] border border-muted bg-white px-3 py-2 text-[13px] text-color-fg focus:outline-2 focus:outline-offset-2 focus:outline-green-500 disabled:opacity-50"
@@ -106,12 +110,13 @@ export function BookingForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-[12px] font-bold text-color-fg">Employee <span className="text-red-500">*</span></label>
+        <label htmlFor="employee" className="text-[12px] font-bold text-color-fg">Employee <span className="text-red-500">*</span></label>
         <Controller
           name="employee"
           control={control}
           render={({ field }) => (
             <AsyncSelect<UserOption>
+              inputId="employee"
               loadOptions={loadUserOptions}
               defaultOptions
               value={field.value}
@@ -150,8 +155,9 @@ export function BookingForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-[12px] font-bold text-color-fg">Date <span className="text-red-500">*</span></label>
+        <label htmlFor="date" className="text-[12px] font-bold text-color-fg">Date <span className="text-red-500">*</span></label>
         <input
+          id="date"
           type="date"
           {...register('date')}
           min={todayString()}
@@ -163,8 +169,9 @@ export function BookingForm() {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
-          <label className="text-[12px] font-bold text-color-fg">Start Time <span className="text-red-500">*</span></label>
+          <label htmlFor="startTime" className="text-[12px] font-bold text-color-fg">Start Time <span className="text-red-500">*</span></label>
           <input
+            id="startTime"
             type="time"
             {...register('startTime')}
             min={workingHoursMin()}
@@ -175,8 +182,9 @@ export function BookingForm() {
           {errors.startTime && <p className="text-[11px] text-red-600">{errors.startTime.message}</p>}
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-[12px] font-bold text-color-fg">End Time <span className="text-red-500">*</span></label>
+          <label htmlFor="endTime" className="text-[12px] font-bold text-color-fg">End Time <span className="text-red-500">*</span></label>
           <input
+            id="endTime"
             type="time"
             {...register('endTime')}
             min={workingHoursMin()}
@@ -189,8 +197,9 @@ export function BookingForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-[12px] font-bold text-color-fg">Notes <span className="text-[11px] font-normal text-fg-muted">(optional)</span></label>
+        <label htmlFor="notes" className="text-[12px] font-bold text-color-fg">Notes <span className="text-[11px] font-normal text-fg-muted">(optional)</span></label>
         <textarea
+          id="notes"
           {...register('notes')}
           maxLength={500}
           rows={3}
