@@ -4,7 +4,7 @@ import type { Booking } from '../types/dashboard'
 
 export async function getBookings(): Promise<Booking[]> {
   const res = await fetch(`${API_URL}/bookings?pageSize=5`)
-  if (!res.ok) throw new Error(`Failed to fetch bookings: ${res.status}`)
   const json = await res.json() as ApiResponse<{ data: Booking[] }>
+  if (!json.isOk) throw new Error(json.message)
   return json.payload.data
 }

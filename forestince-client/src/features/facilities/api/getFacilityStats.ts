@@ -13,7 +13,7 @@ export async function getFacilityStats(
 
   const query = params.toString() ? `?${params.toString()}` : ''
   const res = await fetch(`${API_URL}/reports/facility-stats/${facilityId}${query}`)
-  if (!res.ok) throw new Error(`Failed to fetch facility stats: ${res.status}`)
   const json = await res.json() as ApiResponse<FacilityStatBreakdown>
+  if (!json.isOk) throw new Error(json.message)
   return json.payload
 }

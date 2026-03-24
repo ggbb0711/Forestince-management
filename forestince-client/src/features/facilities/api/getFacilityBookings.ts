@@ -17,7 +17,7 @@ export async function getFacilityBookings(
   if (filters.pageSize !== undefined) params.set('pageSize', String(filters.pageSize))
 
   const res = await fetch(`${API_URL}/bookings?${params.toString()}`)
-  if (!res.ok) throw new Error(res.statusText)
   const json = await res.json() as ApiResponse<{ data: FacilityBooking[]; meta: PaginationMeta }>
+  if (!json.isOk) throw new Error(json.message)
   return json.payload
 }
