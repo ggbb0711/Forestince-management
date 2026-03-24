@@ -5,6 +5,7 @@ import bookingsRouter from './routes/bookings'
 import facilitiesRouter from './routes/facilities'
 import dashboardRouter from './routes/dashboard'
 import reportsRouter from './routes/reports'
+import usersRouter from './routes/users'
 import { errorHandler } from './middleware/errorHandler'
 
 const app = express()
@@ -16,6 +17,7 @@ app.use('/api/bookings', bookingsRouter)
 app.use('/api/facilities', facilitiesRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/reports', reportsRouter)
+app.use('/api/users', usersRouter)
 
 app.get('/health', (_req, res) => {
   res.json({ payload: { status: 'ok' }, message: 'Server is healthy', isOk: true })

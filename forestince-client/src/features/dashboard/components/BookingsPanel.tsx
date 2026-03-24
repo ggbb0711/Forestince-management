@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { cn } from '../../../lib/utils'
 import { StatusBadge } from '../../../components/StatusBadge'
 import { Skeleton } from '../../../components/ui/skeleton'
@@ -38,7 +38,7 @@ function MobileBookingsPanel({ bookings, loading, error, onViewAll, onBookingCli
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-[15px] font-extrabold text-color-fg">Recent Bookings</h2>
         <div className="flex gap-2">
-          <Button variant="primary"><IconPlus /> Booking</Button>
+          <Button variant="primary" asChild><Link to="/facilities/new"><IconPlus /> Booking</Link></Button>
           <Button variant="ghost" onClick={onViewAll}>View All</Button>
         </div>
       </div>
@@ -93,7 +93,7 @@ function DesktopBookingsPanel({ bookings, loading, error, onViewAll, onBookingCl
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h2 className="text-[15px] font-extrabold text-color-fg">Recent Bookings</h2>
           <div className="flex gap-2">
-            <Button variant="primary"><IconPlus /> Booking</Button>
+            <Button variant="primary" asChild><Link to="/facilities/new"><IconPlus /> Booking</Link></Button>
             <Button variant="ghost" onClick={onViewAll}>View All</Button>
           </div>
         </div>

@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import type { Request, Response, NextFunction } from 'express'
-import { query, matchedData } from 'express-validator'
-import { getBookings, getBookingById } from '../services/bookingService'
+import { query, body, matchedData } from 'express-validator'
+import { getBookings, getBookingById, createBooking } from '../services/bookingService'
 import { API_MESSAGES } from '../constants/messages'
 import { validateRequest } from '../middleware/validateRequest'
-import type { BookingFilters, BookingsResponse, BookingWithRelations } from '../types/booking'
+import type { BookingFilters, BookingsResponse, BookingWithRelations, CreateBookingInput } from '../types/booking'
 import type { ApiResponse } from '../types/response'
 
 const router = Router()
@@ -25,15 +25,43 @@ const validateBookingQuery = [
   validateRequest,
 ]
 
+const validateCreateBooking = [
+  body('facilityId').isInt({ min: 1 }).withMessage('facilityId must be a positive integer').toInt(),
+  body('userId').isString().notEmpty().withMessage('userId is required'),
+  body('startTime').isISO8601().withMessage('startTime must be a valid ISO8601 datetime').toDate(),
+  body('endTime').isISO8601().withMessage('endTime must be a valid ISO8601 datetime').toDate(),
+  body('notes').optional().isString().isLength({ max: 500 }).withMessage('notes must be 500 characters or fewer'),
+  validateRequest,
+]
+
 router.get(
   '/',
   validateBookingQuery,
   async (req: Request, res: Response<ApiResponse<BookingsResponse>>, next: NextFunction) => {
     try {
-      const filters = matchedData<BookingFilters>(req, { locations: ['query'] })
+      const filters = matchedData<BookingFilters & { timezone?: string }>(req, { locations: ['query'] })
       const result = await getBookings(filters)
       const { message, isOk } = API_MESSAGES.BOOKINGS.LIST_OK
       return res.json({ payload: result, message, isOk })
+    } catch (err) {
+      return next(err)
+    }
+  },
+)
+
+router.post(
+  '/',
+  validateCreateBooking,
+  async (
+    req: Request,
+    res: Response<ApiResponse<BookingWithRelations>>,
+    next: NextFunction,
+  ) => {
+    try {
+      const data = matchedData<CreateBookingInput>(req, { locations: ['body'] })
+      const booking = await createBooking(data)
+      const { message, isOk, status } = API_MESSAGES.BOOKINGS.CREATED
+      return res.status(status).json({ payload: booking, message, isOk })
     } catch (err) {
       return next(err)
     }

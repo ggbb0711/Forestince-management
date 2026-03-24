@@ -19,6 +19,7 @@ const ROUTES = [
   { path: '/facilities', breadcrumb: 'Facilities' },
   { path: '/facilities/:facilityId', breadcrumb: FacilityBreadcrumb },
   { path: '/facilities/:facilityId/bookings/:bookingId', breadcrumb: BookingBreadcrumb },
+  { path: '/facilities/new', breadcrumb: 'New Booking' },
 ]
 
 export function Breadcrumbs() {

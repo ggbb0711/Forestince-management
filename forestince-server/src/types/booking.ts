@@ -2,6 +2,14 @@ import type { PaginationMeta } from './pagination'
 
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
 
+export interface CreateBookingInput {
+  facilityId: number
+  userId: string
+  startTime: Date
+  endTime: Date
+  notes?: string
+}
+
 export interface BookingFilters {
   status?: BookingStatus
   facilityId?: string
