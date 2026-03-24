@@ -1,10 +1,5 @@
+import dayjs from './dayjs'
+
 export function formatDateTime(iso: string): string {
-  return new Date(iso).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  })
+  return dayjs.utc(iso).format('MMM D, YYYY, h:mm A')
 }
