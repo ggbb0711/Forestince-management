@@ -1,15 +1,17 @@
+import dayjs from '../lib/dayjs'
 import prisma from '../lib/prisma'
 import type { FacilityStatBreakdown, TopBooker, DailyUsage } from '../types/report'
 
 function getDefaultDateRange(): { dateFrom: Date; dateTo: Date } {
-  const now = new Date()
-  const dateFrom = new Date(now.getFullYear(), now.getMonth(), 1)
-  const dateTo = new Date(now)
-  return { dateFrom, dateTo }
+  const now = dayjs.utc()
+  return {
+    dateFrom: now.startOf('month').toDate(),
+    dateTo: now.toDate(),
+  }
 }
 
 function toISODateString(d: Date): string {
-  return d.toISOString().split('T')[0]
+  return dayjs.utc(d).format('YYYY-MM-DD')
 }
 
 
@@ -83,9 +85,12 @@ export async function getFacilityStats(
   }
 
   const dailyUsage: DailyUsage[] = []
-  for (const d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
-    const dateStr = toISODateString(new Date(d))
+  let cursor = dayjs.utc(from)
+  const end = dayjs.utc(to)
+  while (!cursor.isAfter(end)) {
+    const dateStr = cursor.format('YYYY-MM-DD')
     dailyUsage.push({ date: dateStr, count: dailyMap.get(dateStr) ?? 0 })
+    cursor = cursor.add(1, 'day')
   }
 
   const utilizationRate = totalBookings > 0
